@@ -1,8 +1,8 @@
 Summary:        Tools for monitoring SMART capable hard disks.
 Name:           smartmontools
 Version:        5.33
-Release: 	%(R="$Revision: 1.2 $"; RR="${R##: }"; echo ${RR%%?})
-Serial:         1
+Release: 	%(R="$Revision: 1.3 $"; RR="${R##: }"; echo ${RR%%?})
+Epoch:		1
 Group:          System Environment/Base
 License:        GPL
 Source0: 	smartmontools-5.33.tar.gz
