@@ -69,6 +69,11 @@ fi
 %post
 /sbin/chkconfig --add smartd
 
+%triggerpostun -- kernel-utils
+/sbin/chkconfig --add smartd
+exit 0
+
+
 %changelog
 * Sat Dec 18 2004 Dave Jones <davej@redhat.com>
 - Initial packaging, based upon kernel-utils.
