@@ -1,7 +1,7 @@
 Summary:        Tools for monitoring SMART capable hard disks.
 Name:           smartmontools
 Version:        5.33
-Release: 	%(R="$Revision: 1.3 $"; RR="${R##: }"; echo ${RR%%?})
+Release: 	%(R="$Revision: 1.4 $"; RR="${R##: }"; echo ${RR%%?})
 Epoch:		1
 Group:          System Environment/Base
 License:        GPL
@@ -75,6 +75,9 @@ exit 0
 
 
 %changelog
+* Tue Mar  1 2005 Dave Jones <davej@redhat.com>
+- Rebuild for gcc4
+
 * Wed Feb  9 2005 Dave Jones <davej@redhat.com>
 - Build on PPC32 too (#147090)
 
