@@ -1,7 +1,7 @@
 Summary:        Tools for monitoring SMART capable hard disks.
 Name:           smartmontools
 Version:        5.33
-Release: 	%(R="$Revision: 1.1 $"; RR="${R##: }"; echo ${RR%%?})
+Release: 	%(R="$Revision: 1.2 $"; RR="${R##: }"; echo ${RR%%?})
 Serial:         1
 Group:          System Environment/Base
 License:        GPL
@@ -13,7 +13,7 @@ Prereq:		/sbin/chkconfig /sbin/service
 Requires:	fileutils kudzu
 BuildPreReq: 	readline-devel ncurses-devel /usr/bin/aclocal /usr/bin/automake /usr/bin/autoconf util-linux groff gettext
 Obsoletes:	kernel-utils
-ExclusiveArch:	i386 x86_64 ia64 ppc64
+ExclusiveArch:	i386 x86_64 ia64 ppc ppc64
 
 Patch1: smartmontools-smartd.patch
 
@@ -75,6 +75,9 @@ exit 0
 
 
 %changelog
+* Wed Feb  9 2005 Dave Jones <davej@redhat.com>
+- Build on PPC32 too (#147090)
+
 * Sat Dec 18 2004 Dave Jones <davej@redhat.com>
 - Initial packaging, based upon kernel-utils.
 
