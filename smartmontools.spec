@@ -1,7 +1,7 @@
 Summary:        Tools for monitoring SMART capable hard disks.
 Name:           smartmontools
 Version:        5.33
-Release: 	%(R="$Revision: 1.4 $"; RR="${R##: }"; echo ${RR%%?})
+Release: 	%(R="$Revision: 1.5 $"; RR="${R##: }"; echo ${RR%%?})
 Epoch:		1
 Group:          System Environment/Base
 License:        GPL
@@ -56,7 +56,7 @@ chmod -R a-s %{buildroot}
 %attr(0644,root,root) %{_mandir}/*/*
 /usr/sbin/smartd
 /usr/sbin/smartctl
-/usr/sbin/smartd-conf.py
+/usr/sbin/smartd-conf.py?
 /etc/rc.d/init.d/smartd
 %doc /usr/share/doc/smartmontools-5.33
 
@@ -75,6 +75,9 @@ exit 0
 
 
 %changelog
+* Thu Aug 04 2005 Karsten Hopp <karsten@redhat.de>
+- package all python files
+
 * Tue Mar  1 2005 Dave Jones <davej@redhat.com>
 - Rebuild for gcc4
 
