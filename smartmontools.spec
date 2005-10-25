@@ -1,14 +1,14 @@
-Summary:        Tools for monitoring SMART capable hard disks.
-Name:           smartmontools
-Version:        5.33
-Release: 	%(R="$Revision: 1.7 $"; RR="${R##: }"; echo ${RR%%?})
+Summary:	Tools for monitoring SMART capable hard disks.
+Name:		smartmontools
+Version:	5.33
+Release: 	%(R="$Revision: 1.8 $"; RR="${R##: }"; echo ${RR%%?})
 Epoch:		1
-Group:          System Environment/Base
-License:        GPL
-Source0: 	smartmontools-5.33.tar.gz
+Group:		System Environment/Base
+License:	GPL
+Source0:	smartmontools-%{version}.tar.gz
 Source1:	smartd.initd
 Source2:	smartd-conf.py
-Buildroot:      %{_tmppath}/%{name}-%{version}-root
+Buildroot:	%{_tmppath}/%{name}-%{version}-root
 Prereq:		/sbin/chkconfig /sbin/service
 Requires:	fileutils kudzu
 BuildPreReq: 	readline-devel ncurses-devel /usr/bin/aclocal /usr/bin/automake /usr/bin/autoconf util-linux groff gettext
@@ -18,7 +18,12 @@ ExclusiveArch:	i386 x86_64 ia64 ppc ppc64
 Patch1: smartmontools-smartd.patch
 
 %description
-smartctl - monitor the health of your disks
+The smartmontools package contains two utility programs (smartctl
+and smartd) to control and monitor storage systems using the Self-
+Monitoring, Analysis and Reporting Technology System (SMART) built
+into most modern ATA and SCSI hard disks. In many cases, these 
+utilities will provide advanced warning of disk degradation and
+failure.
 
 
 %prep
@@ -33,14 +38,14 @@ mkdir -p %{buildroot}/usr/man
 mkdir -p %{buildroot}/etc/rc.d/init.d
 mkdir -p %{buildroot}/etc/sysconfig
 
-cd smartmontools-5.33
+cd smartmontools-%{version}
 %configure
 make CFLAGS="$RPM_OPT_FLAGS -fpie -pie -Wl,-z,relro,-z,now" DESTDIR=$RPM_BUILD_ROOT smartd smartctl install
 
 %install
 mkdir -p %{buildroot}/usr/share/man/man{1,8}
 
-cd smartmontools-5.33
+cd smartmontools-%{version}
 rm -f %{buildroot}/etc/smartd.conf
 rm -f %{buildroot}/etc/rc.d/init.d/smartd.conf
 install %{SOURCE1} %{buildroot}/etc/rc.d/init.d/smartd
@@ -58,7 +63,7 @@ chmod -R a-s %{buildroot}
 /usr/sbin/smartctl
 /usr/sbin/smartd-conf.py*
 /etc/rc.d/init.d/smartd
-%doc /usr/share/doc/smartmontools-5.33
+%doc /usr/share/doc/smartmontools-%{version}
 
 %preun
 if [ "$1" = "0" ] ; then
