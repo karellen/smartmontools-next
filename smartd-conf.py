@@ -35,7 +35,9 @@ print """# /etc/smartd.conf
 # But send an email in this case"""
 
 for drive in drives:
-    print "/dev/%s -H -m root@localhost" % drive.device
+    fh=open("/sys/block/%s/removable" % drive.device)
+    if fh.read(1) == '0':
+        print "/dev/%s -H -m root@localhost" % drive.device
 
 print """
 # First two SCSI disks.  This will monitor everything that smartd can

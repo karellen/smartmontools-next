@@ -1,21 +1,20 @@
-Summary:	Tools for monitoring SMART capable hard disks.
+Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.33
-Release: 	%(R="$Revision: 1.8 $"; RR="${R##: }"; echo ${RR%%?})
+Release: 	2
 Epoch:		1
 Group:		System Environment/Base
 License:	GPL
-Source0:	smartmontools-%{version}.tar.gz
+URL:		http://smartmontools.sourceforge.net/
+Source0:	http://dl.sourceforge.net/sourceforge/%{name}/%{name}-%{version}.tar.gz
 Source1:	smartd.initd
 Source2:	smartd-conf.py
-Buildroot:	%{_tmppath}/%{name}-%{version}-root
-Prereq:		/sbin/chkconfig /sbin/service
+BuildRoot:	%{_tmppath}/%{name}-%{version}-root
+PreReq:		/sbin/chkconfig /sbin/service
 Requires:	fileutils kudzu
-BuildPreReq: 	readline-devel ncurses-devel /usr/bin/aclocal /usr/bin/automake /usr/bin/autoconf util-linux groff gettext
+BuildRequires: 	readline-devel ncurses-devel /usr/bin/aclocal /usr/bin/automake /usr/bin/autoconf util-linux groff gettext
 Obsoletes:	kernel-utils
 ExclusiveArch:	i386 x86_64 ia64 ppc ppc64
-
-Patch1: smartmontools-smartd.patch
 
 %description
 The smartmontools package contains two utility programs (smartctl
@@ -25,45 +24,35 @@ into most modern ATA and SCSI hard disks. In many cases, these
 utilities will provide advanced warning of disk degradation and
 failure.
 
-
 %prep
-%setup -q -c -a 0
-%patch1 -p0
+%setup -q
 
 %build
-rm -rf $RPM_BUILD_ROOT
-
-mkdir -p %{buildroot}/usr/sbin
-mkdir -p %{buildroot}/usr/man
-mkdir -p %{buildroot}/etc/rc.d/init.d
-mkdir -p %{buildroot}/etc/sysconfig
-
-cd smartmontools-%{version}
 %configure
-make CFLAGS="$RPM_OPT_FLAGS -fpie -pie -Wl,-z,relro,-z,now" DESTDIR=$RPM_BUILD_ROOT smartd smartctl install
+make CFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie -Wl,-z,relro,-z,now"
 
 %install
-mkdir -p %{buildroot}/usr/share/man/man{1,8}
+rm -rf $RPM_BUILD_ROOT
+make DESTDIR=$RPM_BUILD_ROOT install
 
-cd smartmontools-%{version}
-rm -f %{buildroot}/etc/smartd.conf
-rm -f %{buildroot}/etc/rc.d/init.d/smartd.conf
-install %{SOURCE1} %{buildroot}/etc/rc.d/init.d/smartd
-install %{SOURCE2} %{buildroot}/usr/sbin/smartd-conf.py
-
-chmod -R a-s %{buildroot}
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/smartd.conf
+rm -f examplescripts/Makefile*
+install -D -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/smartd
+install -D -m 755 %{SOURCE2} $RPM_BUILD_ROOT%{_sbindir}/smartd-conf.py
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && [ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT;
+rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%attr(0644,root,root) %{_mandir}/*/*
-/usr/sbin/smartd
-/usr/sbin/smartctl
-/usr/sbin/smartd-conf.py*
-/etc/rc.d/init.d/smartd
-%doc /usr/share/doc/smartmontools-%{version}
+%doc AUTHORS CHANGELOG COPYING INSTALL NEWS README
+%doc TODO WARNINGS examplescripts smartd.conf
+%{_sbindir}/smartd
+%{_sbindir}/smartctl
+%{_sbindir}/smartd-conf.py*
+%{_sysconfdir}/rc.d/init.d/smartd
+%{_mandir}/man?/smart*.*
+%ghost %verify(not md5 size mtime) %config(noreplace,missingok) %{_sysconfdir}/smartd.conf
 
 %preun
 if [ "$1" = "0" ] ; then
@@ -80,6 +69,13 @@ exit 0
 
 
 %changelog
+* Thu Nov  3 2005 Tomas Mraz <tmraz@redhat.com> 1:5.33-2
+- Spec file cleanup by Robert Scheck <redhat@linuxnetz.de> (#170959)
+- manual release numbering
+- remove bogus patch of non-installed file
+- only non-removable drives should be added to smartd.conf
+- smartd.conf should be owned (#171498)
+
 * Tue Oct 25 2005 Dave Jones <davej@redhat.com>
 - Add comments to generated smartd.conf (#135397)
 
