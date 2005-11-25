@@ -34,10 +34,24 @@ print """# /etc/smartd.conf
 # A very silent check.  Only report SMART health status if it fails
 # But send an email in this case"""
 
+def getfile(fname):
+    try:
+	fh = open(fname)
+        line = fh.read().rstrip()
+	fh.close()
+    except IOError:
+	line = ''
+    return line
+
 for drive in drives:
-    fh=open("/sys/block/%s/removable" % drive.device)
-    if fh.read(1) == '0':
-        print "/dev/%s -H -m root@localhost" % drive.device
+    if getfile("/sys/block/%s/removable" % drive.device) == '0':
+	driver = ''
+	comment = ''
+	if getfile("/sys/block/%s/device/vendor" % drive.device) == 'ATA':
+	    driver = '-d ata '
+	    if float(getfile("/sys/module/libata/version")) < 1.20:
+		comment = "# not yet supported in this kernel version "
+	print "%s/dev/%s %s-H -m root@localhost" % (comment, drive.device, driver)
 
 print """
 # First two SCSI disks.  This will monitor everything that smartd can

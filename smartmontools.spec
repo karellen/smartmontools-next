@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.33
-Release: 	2
+Release: 	3
 Epoch:		1
 Group:		System Environment/Base
 License:	GPL
@@ -69,6 +69,10 @@ exit 0
 
 
 %changelog
+* Fri Nov 25 2005 Tomas Mraz <tmraz@redhat.com> 1:5.33-3
+- add libata disks with -d ata if the libata version
+  is new enough otherwise do not add them (#145859, #174095)
+
 * Thu Nov  3 2005 Tomas Mraz <tmraz@redhat.com> 1:5.33-2
 - Spec file cleanup by Robert Scheck <redhat@linuxnetz.de> (#170959)
 - manual release numbering
