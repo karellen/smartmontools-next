@@ -51,7 +51,7 @@ for drive in drives:
 	    driver = '-d ata '
 	    if float(getfile("/sys/module/libata/version")) < 1.20:
 		comment = "# not yet supported in this kernel version "
-	print "%s/dev/%s %s-H -m root@localhost" % (comment, drive.device, driver)
+	print "%s/dev/%s %s-H -m root" % (comment, drive.device, driver)
 
 print """
 # First two SCSI disks.  This will monitor everything that smartd can
