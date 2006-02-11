@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.33
-Release: 	4.1
+Release: 	4.2
 Epoch:		1
 Group:		System Environment/Base
 License:	GPL
@@ -69,6 +69,9 @@ exit 0
 
 
 %changelog
+* Fri Feb 10 2006 Jesse Keating <jkeating@redhat.com> - 1:5.33-4.2
+- bump again for double-long bug on ppc(64)
+
 * Tue Feb 07 2006 Jesse Keating <jkeating@redhat.com> - 1:5.33-4.1
 - rebuilt for new gcc4.1 snapshot and glibc changes
 
