@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.33
-Release: 	4.2
+Release: 	5
 Epoch:		1
 Group:		System Environment/Base
 License:	GPL
@@ -9,6 +9,7 @@ URL:		http://smartmontools.sourceforge.net/
 Source0:	http://dl.sourceforge.net/sourceforge/%{name}/%{name}-%{version}.tar.gz
 Source1:	smartd.initd
 Source2:	smartd-conf.py
+Source3:	smartmontools.sysconf
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 PreReq:		/sbin/chkconfig /sbin/service
 Requires:	fileutils kudzu
@@ -39,6 +40,7 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/smartd.conf
 rm -f examplescripts/Makefile*
 install -D -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/smartd
 install -D -m 755 %{SOURCE2} $RPM_BUILD_ROOT%{_sbindir}/smartd-conf.py
+install -D -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/smartmontools
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -53,6 +55,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/rc.d/init.d/smartd
 %{_mandir}/man?/smart*.*
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) %{_sysconfdir}/smartd.conf
+%config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %preun
 if [ "$1" = "0" ] ; then
@@ -69,6 +72,11 @@ exit 0
 
 
 %changelog
+* Wed Mar 22 2006 Tomas Mraz <tmraz@redhat.com> - 1:5.33-5
+- add default /etc/sysconfig/smartmontools file
+- ignore errors on startup (#186130)
+- test drive for SMART support before adding it to smartd.conf
+
 * Fri Feb 10 2006 Jesse Keating <jkeating@redhat.com> - 1:5.33-4.2
 - bump again for double-long bug on ppc(64)
 
