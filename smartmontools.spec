@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.33
-Release: 	6
+Release: 	7
 Epoch:		1
 Group:		System Environment/Base
 License:	GPL
@@ -72,6 +72,9 @@ exit 0
 
 
 %changelog
+* Fri Mar 24 2006 Tomas Mraz <tmraz@redhat.com> - 1:5.33-7
+- add missing quotes to /etc/sysconfig/smartmontools
+
 * Wed Mar 22 2006 Tomas Mraz <tmraz@redhat.com> - 1:5.33-6
 - test SATA drives correctly
 

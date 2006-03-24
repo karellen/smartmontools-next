@@ -1,2 +1,2 @@
 # command line options for smartd
-smartd_opts=-q never
+smartd_opts="-q never"
