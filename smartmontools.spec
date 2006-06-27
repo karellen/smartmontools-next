@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.36
-Release: 	1
+Release: 	2
 Epoch:		1
 Group:		System Environment/Base
 License:	GPL
@@ -15,7 +15,7 @@ Patch1:		http://people.fedora.de/rsc/smartmontools-5.36-cciss.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 PreReq:		/sbin/chkconfig /sbin/service
-Requires:	fileutils kudzu
+Requires:	fileutils hal >= 0.5.2 dbus-python >= 0.33
 BuildRequires: 	readline-devel ncurses-devel /usr/bin/aclocal /usr/bin/automake /usr/bin/autoconf util-linux groff gettext
 Obsoletes:	kernel-utils
 ExclusiveArch:	i386 x86_64 ia64 ppc ppc64
@@ -76,6 +76,11 @@ exit 0
 
 
 %changelog
+* Tue Jun 27 2006 Tomas Mraz <tmraz@redhat.com> - 1:5.36-2
+- kudzu is deprecated, replace it with HAL (#195752)
+- moved later in the boot process so haldaemon is already running
+  when drives are being detected
+
 * Thu May 11 2006 Tomas Mraz <tmraz@redhat.com> - 1:5.36-1
 - new upstream version
 - included patch with support for cciss controllers (#191288)
