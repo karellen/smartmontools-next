@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.36
-Release: 	2
+Release: 	2.1
 Epoch:		1
 Group:		System Environment/Base
 License:	GPL
@@ -76,6 +76,9 @@ exit 0
 
 
 %changelog
+* Wed Jul 12 2006 Jesse Keating <jkeating@redhat.com> - 1:5.36-2.1
+- rebuild
+
 * Tue Jun 27 2006 Tomas Mraz <tmraz@redhat.com> - 1:5.36-2
 - kudzu is deprecated, replace it with HAL (#195752)
 - moved later in the boot process so haldaemon is already running
