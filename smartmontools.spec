@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.36
-Release: 	4%{?dist}
+Release: 	5%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPL
@@ -32,7 +32,9 @@ failure.
 
 %prep
 %setup -q
-%patch1 -p 1 -b .cciss
+%patch1 -p1 -b .cciss
+%patch2 -p1 -b .cloexec
+%patch3 -p1 -b .sata
 
 %build
 %configure
@@ -78,7 +80,7 @@ exit 0
 
 
 %changelog
-* Tue Nov  7 2006 Tomas Mraz <tmraz@redhat.com> - 1:5.36-4
+* Tue Nov  7 2006 Tomas Mraz <tmraz@redhat.com> - 1:5.36-5
 - set cloexec on device descriptor so it doesn't leak to sendmail (#214182)
 - fixed minor bug in initscript (#213683)
 - backported SATA disk detection from upstream
