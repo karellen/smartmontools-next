@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.36
-Release: 	3
+Release: 	4%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPL
@@ -12,6 +12,8 @@ Source2:	smartd.initd
 Source3:	smartd-conf.py
 Source4:	smartmontools.sysconf
 Patch1:		http://people.fedora.de/rsc/smartmontools-5.36-cciss.patch
+Patch2:		smartmontools-5.36-cloexec.patch
+Patch3:		smartmontools-5.36-sata.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 PreReq:		/sbin/chkconfig /sbin/service
@@ -76,6 +78,11 @@ exit 0
 
 
 %changelog
+* Tue Nov  7 2006 Tomas Mraz <tmraz@redhat.com> - 1:5.36-4
+- set cloexec on device descriptor so it doesn't leak to sendmail (#214182)
+- fixed minor bug in initscript (#213683)
+- backported SATA disk detection from upstream
+
 * Fri Aug 18 2006 Jesse Keating <jkeating@redhat.com> - 1:5.36-3
 - rebuilt with latest binutils to pick up 64K -z commonpagesize on ppc*
   (#203001)

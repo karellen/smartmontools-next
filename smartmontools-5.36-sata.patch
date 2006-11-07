@@ -1,0 +1,57 @@
+--- smartmontools-5.33/scsicmds.c.sata	2004-09-05 22:57:43.000000000 +0200
++++ smartmontools-5.33/scsicmds.c	2006-10-25 20:38:01.000000000 +0200
+@@ -1979,11 +1979,15 @@
+     int k, id_len, c_set, assoc, id_type, i_len;
+     unsigned char * ucp;
+     unsigned char * ip;
++    unsigned char buff1[20];
++    unsigned char buff2[20];
+ 
+     if (len < 4) {
+         /* Device identification VPD page length too short */
+         return 0;
+     }
++    buff1[0] = '\0';
++    buff2[0] = '\0';
+     len -= 4;
+     ucp = vpd_di_buff + 4;
+     for (k = 0; k < len; k += id_len, ucp += id_len) {
+@@ -1997,9 +2001,24 @@
+         c_set = (ucp[0] & 0xf);
+         assoc = ((ucp[1] >> 4) & 0x3);
+         id_type = (ucp[1] & 0xf);
+-        if ((0 == id_type) && (2 == c_set) && (0 == assoc) &&
+-            (0 == strncmp((const char *)ip,
+-                          "Linux ATA-SCSI simulator", i_len))) {
++        if ((0 == id_type) && (2 == c_set) && (0 == assoc)) {
++            /* assoc=lu, c_set=ascii, id_type=vendor */
++            if (0 == strncmp((const char *)ip,
++                             "Linux ATA-SCSI simulator", i_len)) {
++                /* until lk 2.6.16 */
++                return 1;
++            }
++            memcpy(buff1, ip, sizeof(buff1));
++        }
++        if ((1 == id_type) && (2 == c_set) && (0 == assoc)) {
++            /* assoc=lu, c_set=ascii, id_type=t10 vendor id */
++            if (0 == strncmp((const char *)ip, "ATA", 3))
++                memcpy(buff2, ip + 48, sizeof(buff2));
++        }
++    }
++    if (buff1[0] && buff2[0]) {
++        if (0 == memcmp(buff1, buff2, sizeof(buff1))) {
++            /* after lk 2.6.16, look for serial number match */
+             return 1;
+         }
+     }
+--- smartmontools-5.33/scsiprint.c.sata	2004-09-06 07:44:54.000000000 +0200
++++ smartmontools-5.33/scsiprint.c	2006-10-25 20:47:58.000000000 +0200
+@@ -739,7 +739,7 @@
+         /* <<<< This is Linux specific code to detect SATA disks using a
+                 SCSI-ATA command translation layer. This may be generalized
+                 later when the t10.org SAT project matures. >>>> */
+-        req_len = 96;
++        req_len = 252;
+         memset(gBuf, 0, req_len);
+         if ((err = scsiInquiryVpd(device, 0x83, gBuf, req_len))) {
+             PRINT_ON(con);
