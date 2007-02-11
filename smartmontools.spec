@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.36
-Release: 	5%{?dist}
+Release: 	6%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPL
@@ -70,6 +70,7 @@ if [ "$1" = "0" ] ; then
  /sbin/service smartd stop
  /sbin/chkconfig --del smartd
 fi
+exit 0
 
 %post
 /sbin/chkconfig --add smartd
@@ -80,6 +81,9 @@ exit 0
 
 
 %changelog
+* Sun Feb 11 2007 Florian La Roche <laroche@redhat.com> - 1:5.36-6
+- make sure the preun script does not fail
+
 * Tue Nov  7 2006 Tomas Mraz <tmraz@redhat.com> - 1:5.36-5
 - set cloexec on device descriptor so it doesn't leak to sendmail (#214182)
 - fixed minor bug in initscript (#213683)
