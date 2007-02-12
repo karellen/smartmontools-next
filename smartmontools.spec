@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.36
-Release: 	6%{?dist}
+Release: 	7%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPL
@@ -67,7 +67,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %preun
 if [ "$1" = "0" ] ; then
- /sbin/service smartd stop
+ /sbin/service smartd stop >/dev/null 2>&1
  /sbin/chkconfig --del smartd
 fi
 exit 0
@@ -81,6 +81,9 @@ exit 0
 
 
 %changelog
+* Mon Feb 12 2007 Tomas Mraz <tmraz@redhat.com> - 1:5.36-7
+- redirect service script output to null (#224566)
+
 * Sun Feb 11 2007 Florian La Roche <laroche@redhat.com> - 1:5.36-6
 - make sure the preun script does not fail
 
