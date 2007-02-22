@@ -82,7 +82,7 @@ for drive in drives:
 	    if float(getfile("/sys/module/libata/version")) < 1.20:
 		comment = "# not yet supported in this kernel version\n# "
 	if not comment:
-	    status = os.system("/usr/sbin/smartctl -i %s%s 2>&1 >/dev/null" %
+	    status = os.system("/usr/sbin/smartctl -s on -i %s%s 2>&1 >/dev/null" %
 		(driver, drive.device))
 	    if not os.WIFEXITED(status) or os.WEXITSTATUS(status) != 0:
 		comment = "# smartctl -i returns error for this drive\n# "

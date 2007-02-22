@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.36
-Release: 	7%{?dist}
+Release: 	8%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPL
@@ -81,6 +81,10 @@ exit 0
 
 
 %changelog
+* Thu Feb 22 2007 Tomas Mraz <tmraz@redhat.com> - 1:5.36-8
+- enable SMART on disks when smartd-conf.py runs (fix
+  by Calvin Ostrum) (#214502)
+
 * Mon Feb 12 2007 Tomas Mraz <tmraz@redhat.com> - 1:5.36-7
 - redirect service script output to null (#224566)
 
