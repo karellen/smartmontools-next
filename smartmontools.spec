@@ -1,19 +1,15 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
-Version:	5.36
-Release: 	8%{?dist}
+Version:	5.37
+Release: 	1%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPL
 URL:		http://smartmontools.sourceforge.net/
 Source0:	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
-Source1:	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz.asc
-Source2:	smartd.initd
-Source3:	smartd-conf.py
-Source4:	smartmontools.sysconf
-Patch1:		http://people.fedora.de/rsc/smartmontools-5.36-cciss.patch
-Patch2:		smartmontools-5.36-cloexec.patch
-Patch3:		smartmontools-5.36-sata.patch
+Source1:	smartd.initd
+Source2:	smartd-conf.py
+Source3:	smartmontools.sysconf
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 PreReq:		/sbin/chkconfig /sbin/service
@@ -32,13 +28,10 @@ failure.
 
 %prep
 %setup -q
-%patch1 -p1 -b .cciss
-%patch2 -p1 -b .cloexec
-%patch3 -p1 -b .sata
 
 %build
 %configure
-make CFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie -Wl,-z,relro,-z,now"
+make CFLAGS="$RPM_OPT_FLAGS -fpic" LDFLAGS="-pic -Wl,-z,relro,-z,now"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -46,9 +39,9 @@ make DESTDIR=$RPM_BUILD_ROOT install
 
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/smartd.conf
 rm -f examplescripts/Makefile*
-install -D -m 755 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/smartd
-install -D -m 755 %{SOURCE3} $RPM_BUILD_ROOT%{_sbindir}/smartd-conf.py
-install -D -m 644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/smartmontools
+install -D -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/smartd
+install -D -m 755 %{SOURCE2} $RPM_BUILD_ROOT%{_sbindir}/smartd-conf.py
+install -D -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/smartmontools
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -81,9 +74,8 @@ exit 0
 
 
 %changelog
-* Thu Feb 22 2007 Tomas Mraz <tmraz@redhat.com> - 1:5.36-8
-- enable SMART on disks when smartd-conf.py runs (fix
-  by Calvin Ostrum) (#214502)
+* Tue Feb 27 2007 Vitezslav Crhonek <vcrhonek@redhat.com> - 1:5.37-1
+- new upstream version
 
 * Mon Feb 12 2007 Tomas Mraz <tmraz@redhat.com> - 1:5.36-7
 - redirect service script output to null (#224566)
