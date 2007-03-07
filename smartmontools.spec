@@ -10,6 +10,7 @@ Source0:	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 Source1:	smartd.initd
 Source2:	smartd-conf.py
 Source3:	smartmontools.sysconf
+Patch1:		smartmontools-5.37-cloexec.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 PreReq:		/sbin/chkconfig /sbin/service
@@ -28,10 +29,11 @@ failure.
 
 %prep
 %setup -q
+%patch1 -p1 -b .cloexec
 
 %build
 %configure
-make CFLAGS="$RPM_OPT_FLAGS -fpic" LDFLAGS="-pic -Wl,-z,relro,-z,now"
+make CFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-fpie -Wl,-z,relro,-z,now"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -76,6 +78,10 @@ exit 0
 %changelog
 * Tue Feb 27 2007 Vitezslav Crhonek <vcrhonek@redhat.com> - 1:5.37-1
 - new upstream version
+
+* Thu Feb 22 2007 Tomas Mraz <tmraz@redhat.com> - 1:5.36-8
+- enable SMART on disks when smartd-conf.py runs (fix
+  by Calvin Ostrum) (#214502)
 
 * Mon Feb 12 2007 Tomas Mraz <tmraz@redhat.com> - 1:5.36-7
 - redirect service script output to null (#224566)
