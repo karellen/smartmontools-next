@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.37
-Release: 	1%{?dist}
+Release: 	2%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPL
@@ -76,6 +76,11 @@ exit 0
 
 
 %changelog
+* Wed Mar  7 2007 Vitezslav Crhonek <vcrhonek@redhat.com> - 1:5.37-2
+- re-add cloexec patch
+- re-add one erased changelog entry
+- compile with -fpie (instead of -fpic)
+
 * Tue Feb 27 2007 Vitezslav Crhonek <vcrhonek@redhat.com> - 1:5.37-1
 - new upstream version
 
