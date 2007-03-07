@@ -1,0 +1,51 @@
+--- smartmontools-5.37/os_linux.cpp.fix	2006-10-25 19:01:42.000000000 +0200
++++ smartmontools-5.37/os_linux.cpp	2007-02-27 13:20:55.000000000 +0100
+@@ -190,14 +190,14 @@
+ 
+ // equivalent to open(path, flags)
+ int deviceopen(const char *pathname, char *type){
++  int fd = -1;
+   if (!strcmp(type,"SCSI")) {
+-    int fd = open(pathname, O_RDWR | O_NONBLOCK);
++    fd = open(pathname, O_RDWR | O_NONBLOCK);
+     if (fd < 0 && errno == EROFS)
+       fd = open(pathname, O_RDONLY | O_NONBLOCK);
+-    return fd;
+   }
+   else if (!strcmp(type,"ATA")) 
+-    return open(pathname, O_RDONLY | O_NONBLOCK);
++    fd = open(pathname, O_RDONLY | O_NONBLOCK);
+   else if (!strcmp(type,"ATA_3WARE_9000")) {
+     // the device nodes for this controller are dynamically assigned,
+     // so we need to check that they exist with the correct major
+@@ -207,7 +207,7 @@
+         errno=ENXIO;
+       return -1;
+     }
+-    return open(pathname, O_RDONLY | O_NONBLOCK);
++    fd = open(pathname, O_RDONLY | O_NONBLOCK);
+   }
+   else if (!strcmp(type,"ATA_3WARE_678K")) {
+     // the device nodes for this controller are dynamically assigned,
+@@ -218,15 +218,19 @@
+         errno=ENXIO;
+       return -1;
+     }
+-    return open(pathname, O_RDONLY | O_NONBLOCK);
++    fd = open(pathname, O_RDONLY | O_NONBLOCK);
+   }
+   else if(!strcmp(type, "CCISS")) {
+     // the device is a cciss smart array device.
+-    return open(pathname, O_RDWR | O_NONBLOCK);
++    fd = open(pathname, O_RDWR | O_NONBLOCK);
+   }
+   else
+     return -1;
+ 
++  if (fd != -1) {
++    fcntl(fd, F_SETFD, FD_CLOEXEC);
++  }
++  return fd;
+ }
+ 
+ // equivalent to close(file descriptor)
