@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.37
-Release: 	2%{?dist}
+Release: 	3%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPL
@@ -14,7 +14,7 @@ Patch1:		smartmontools-5.37-cloexec.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 PreReq:		/sbin/chkconfig /sbin/service
-Requires:	fileutils hal >= 0.5.2 dbus-python >= 0.33
+Requires:	fileutils hal >= 0.5.2 dbus-python >= 0.33 mailx
 BuildRequires: 	readline-devel ncurses-devel /usr/bin/aclocal /usr/bin/automake /usr/bin/autoconf util-linux groff gettext
 Obsoletes:	kernel-utils
 ExclusiveArch:	i386 x86_64 ia64 ppc ppc64
@@ -43,6 +43,7 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/smartd.conf
 rm -f examplescripts/Makefile*
 install -D -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/smartd
 install -D -m 755 %{SOURCE2} $RPM_BUILD_ROOT%{_sbindir}/smartd-conf.py
+touch $RPM_BUILD_ROOT%{_sbindir}/smartd-conf.py{c,o}
 install -D -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/smartmontools
 
 %clean
@@ -54,7 +55,8 @@ rm -rf $RPM_BUILD_ROOT
 %doc TODO WARNINGS examplescripts smartd.conf
 %{_sbindir}/smartd
 %{_sbindir}/smartctl
-%{_sbindir}/smartd-conf.py*
+%{_sbindir}/smartd-conf.py
+%exclude %{_sbindir}/smartd-conf.py[co]
 %{_sysconfdir}/rc.d/init.d/smartd
 %{_mandir}/man?/smart*.*
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) %{_sysconfdir}/smartd.conf
@@ -76,6 +78,10 @@ exit 0
 
 
 %changelog
+* Tue Jun 05 2007 Tomas Smetana <tsmetana@redhat.com> - 1:5.37-3
+- fix #241385 - smartmontools missing dependency on mailx
+- fix #241388 - unneeded smartd-conf.py[co] installed in /usr/sbin
+
 * Wed Mar  7 2007 Vitezslav Crhonek <vcrhonek@redhat.com> - 1:5.37-2
 - re-add cloexec patch
 - re-add one erased changelog entry
