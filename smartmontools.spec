@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.37
-Release: 	3%{?dist}
+Release: 	4%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPL
@@ -14,7 +14,7 @@ Patch1:		smartmontools-5.37-cloexec.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 PreReq:		/sbin/chkconfig /sbin/service
-Requires:	fileutils hal >= 0.5.2 dbus-python >= 0.33 mailx
+Requires:	fileutils mailx
 BuildRequires: 	readline-devel ncurses-devel /usr/bin/aclocal /usr/bin/automake /usr/bin/autoconf util-linux groff gettext
 Obsoletes:	kernel-utils
 ExclusiveArch:	i386 x86_64 ia64 ppc ppc64
@@ -26,6 +26,15 @@ Monitoring, Analysis and Reporting Technology System (SMART) built
 into most modern ATA and SCSI hard disks. In many cases, these 
 utilities will provide advanced warning of disk degradation and
 failure.
+
+%package config
+Group: System Environment/Base
+Summary: The smartmontools configuration script
+Requires: %{name} = %{epoch}:%{version}-%{release} hal >= 0.5.2 dbus-python >= 0.33
+
+%description config
+This package provides a smartd-conf.py script that helps to create
+the /etc/smartd.conf configuration file.
 
 %prep
 %setup -q
@@ -49,19 +58,6 @@ install -D -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/smartmontoo
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files
-%defattr(-,root,root)
-%doc AUTHORS CHANGELOG COPYING INSTALL NEWS README
-%doc TODO WARNINGS examplescripts smartd.conf
-%{_sbindir}/smartd
-%{_sbindir}/smartctl
-%{_sbindir}/smartd-conf.py
-%exclude %{_sbindir}/smartd-conf.py[co]
-%{_sysconfdir}/rc.d/init.d/smartd
-%{_mandir}/man?/smart*.*
-%ghost %verify(not md5 size mtime) %config(noreplace,missingok) %{_sysconfdir}/smartd.conf
-%config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
-
 %preun
 if [ "$1" = "0" ] ; then
  /sbin/service smartd stop >/dev/null 2>&1
@@ -76,8 +72,27 @@ exit 0
 /sbin/chkconfig --add smartd
 exit 0
 
+%files
+%defattr(-,root,root)
+%doc AUTHORS CHANGELOG COPYING INSTALL NEWS README
+%doc TODO WARNINGS examplescripts smartd.conf
+%{_sbindir}/smartd
+%{_sbindir}/smartctl
+%{_sysconfdir}/rc.d/init.d/smartd
+%{_mandir}/man?/smart*.*
+%ghost %verify(not md5 size mtime) %config(noreplace,missingok) %{_sysconfdir}/smartd.conf
+%config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
+
+%files config
+%defattr(-,root,root)
+%{_sbindir}/smartd-conf.py
+%exclude %{_sbindir}/smartd-conf.py[co]
 
 %changelog
+* Thu Jun 21 2007 Tomas Smetana <tsmetana@redhat.com> - 1:5.37-4
+- fix #241389 - smartd-conf.py pulls in a big dependency chain, so
+  build a separate config package
+  
 * Tue Jun 05 2007 Tomas Smetana <tsmetana@redhat.com> - 1:5.37-3
 - fix #241385 - smartmontools missing dependency on mailx
 - fix #241388 - unneeded smartd-conf.py[co] installed in /usr/sbin
