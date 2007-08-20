@@ -1,23 +1,24 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.37
-Release: 	4%{?dist}
+Release: 	5%{?dist}
 Epoch:		1
 Group:		System Environment/Base
-License:	GPL
+License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
 Source0:	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 Source1:	smartd.initd
 Source2:	smartd-conf.py
 Source3:	smartmontools.sysconf
 Patch1:		smartmontools-5.37-cloexec.patch
+Patch2:		smartmontools-5.37-3ware.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 PreReq:		/sbin/chkconfig /sbin/service
 Requires:	fileutils mailx
 BuildRequires: 	readline-devel ncurses-devel /usr/bin/aclocal /usr/bin/automake /usr/bin/autoconf util-linux groff gettext
 Obsoletes:	kernel-utils
-ExclusiveArch:	i386 x86_64 ia64 ppc ppc64
+ExclusiveArch:	i386 x86_64 %{arm} ia64 ppc ppc64
 
 %description
 The smartmontools package contains two utility programs (smartctl
@@ -39,6 +40,7 @@ the /etc/smartd.conf configuration file.
 %prep
 %setup -q
 %patch1 -p1 -b .cloexec
+%patch2 -p1 -b .3ware
 
 %build
 %configure
@@ -89,6 +91,11 @@ exit 0
 %exclude %{_sbindir}/smartd-conf.py[co]
 
 %changelog
+* Mon Aug 20 2007 Tomas Smetana <tsmetana@redhat.com> - 1:5.37-5
+- add support for 24 disks on 3ware RAID controllers (related #252055)
+- fix #245442 - add %%{arm} to smartmontools's set of build archs
+- update license tag
+
 * Thu Jun 21 2007 Tomas Smetana <tsmetana@redhat.com> - 1:5.37-4
 - fix #241389 - smartd-conf.py pulls in a big dependency chain, so
   build a separate config package
