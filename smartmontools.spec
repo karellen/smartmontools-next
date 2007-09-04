@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.37
-Release: 	5%{?dist}
+Release: 	6%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -91,6 +91,11 @@ exit 0
 %exclude %{_sbindir}/smartd-conf.py[co]
 
 %changelog
+* Tue Sep 04 2007 Tomas Smetana <tsmetana@redhat.com> - 1:5.37-6
+- fix #271741 - smartd-conf.py should allow customization of parameters
+- fix #253753 - service starting by default, perhaps shouldn't
+- update initscript (related #247058 - initscript review)
+
 * Mon Aug 20 2007 Tomas Smetana <tsmetana@redhat.com> - 1:5.37-5
 - add support for 24 disks on 3ware RAID controllers (related #252055)
 - fix #245442 - add %%{arm} to smartmontools's set of build archs
