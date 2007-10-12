@@ -1,0 +1,38 @@
+--- smartmontools-5.37/smartd.cpp.addrinfo	2007-10-12 13:09:55.000000000 +0200
++++ smartmontools-5.37/smartd.cpp	2007-10-12 13:11:41.000000000 +0200
+@@ -499,14 +499,28 @@
+ char* dnsdomain(const char* hostname) {
+   char *p = NULL;
+ #ifdef HAVE_GETHOSTBYNAME
+-  struct hostent *hp;
+-  
+-  if ((hp = gethostbyname(hostname))) {
+-    // Does this work if gethostbyname() returns an IPv6 name in
+-    // colon/dot notation?  [BA]
+-    if ((p = strchr(hp->h_name, '.')))
+-      p++; // skip "."
++  /* This is a Fedora specific patch.  We KNOW that there is getaddrinfo
++   * and getnameinfo.  This part is not portable. */
++  static char canon_name[NI_MAXHOST];
++  struct addrinfo *info;
++  int err;
++
++  if (err = getaddrinfo(hostname, NULL, NULL, &info)) {
++    PrintOut(LOG_CRIT, "Error retrieving info for %s: %s\n",
++        hostname, gai_strerror(err));
++    return NULL;
++  }
++  canon_name[0] = '\0';
++  if (err = getnameinfo(info->ai_addr, sizeof(struct sockaddr),
++        canon_name, sizeof(canon_name), NULL, 0, 0)) {
++    PrintOut(LOG_CRIT, "Error retrieving name info for %s: %s\n",
++        hostname, gai_strerror(err));
++    return NULL;
+   }
++  freeaddrinfo(info);
++  p = canon_name;
++  if ((p = strchr(p, '.')))
++    p++;
+ #else
+   ARGUSED(hostname);
+ #endif

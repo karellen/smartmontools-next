@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.37
-Release: 	6%{?dist}
+Release: 	7%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -12,6 +12,7 @@ Source2:	smartd-conf.py
 Source3:	smartmontools.sysconf
 Patch1:		smartmontools-5.37-cloexec.patch
 Patch2:		smartmontools-5.37-3ware.patch
+Patch3:     smartmontools-5.37-addrinfo.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 PreReq:		/sbin/chkconfig /sbin/service
@@ -41,6 +42,7 @@ the /etc/smartd.conf configuration file.
 %setup -q
 %patch1 -p1 -b .cloexec
 %patch2 -p1 -b .3ware
+%patch3 -p1 -b .addrinfo
 
 %build
 %configure
@@ -91,6 +93,9 @@ exit 0
 %exclude %{_sbindir}/smartd-conf.py[co]
 
 %changelog
+* Fri Oct 12 2007 Tomas Smetana <tsmetana@redhat.com> - 1:5.37-7
+- replace gethostbyname with getaddrinfo
+
 * Tue Sep 04 2007 Tomas Smetana <tsmetana@redhat.com> - 1:5.37-6
 - fix #271741 - smartd-conf.py should allow customization of parameters
 - fix #253753 - service starting by default, perhaps shouldn't
