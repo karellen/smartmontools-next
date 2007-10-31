@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.37
-Release: 	8%{?dist}
+Release: 	8.1%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -13,6 +13,7 @@ Source3:	smartmontools.sysconf
 Patch1:		smartmontools-5.37-cloexec.patch
 Patch2:		smartmontools-5.37-3ware.patch
 Patch3:     smartmontools-5.37-addrinfo.patch
+Patch4:     smartmontools-5.37-buildfix.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 PreReq:		/sbin/chkconfig /sbin/service
@@ -43,6 +44,7 @@ the /etc/smartd.conf configuration file.
 %patch1 -p1 -b .cloexec
 %patch2 -p1 -b .3ware
 %patch3 -p1 -b .addrinfo
+%patch4 -p1 -b .buildfix
 
 %build
 ./autogen.sh
@@ -94,6 +96,9 @@ exit 0
 %exclude %{_sbindir}/smartd-conf.py[co]
 
 %changelog
+* Wed Oct 31 2007 Tomas Smetana <tsmetana@redhat.com> - 1:5.37-8.1
+- fix build with new automake
+
 * Wed Oct 31 2007 Tomas Smetana <tsmetana@redhat.com> - 1:5.37-8
 - fix #359561 - typo in smartd-conf.py causes smartd to skip all disks
 

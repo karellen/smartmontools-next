@@ -1,0 +1,11 @@
+--- smartmontools-5.37/autogen.sh.buildfix	2007-10-31 11:29:51.000000000 +0100
++++ smartmontools-5.37/autogen.sh	2007-10-31 11:30:24.000000000 +0100
+@@ -48,7 +48,7 @@
+ echo "than 1.9.x) is only added after extensive tests. If you live in"
+ echo "the bleeding edge, you should know what you're doing, mainly how"
+ echo "to test it before the developers. Be patient."
+-exit 1;
++#exit 1;
+ }
+ 
+ test -x "$ACLOCAL" || ACLOCAL="aclocal`echo "$AUTOMAKE" | sed 's/.*automake//'`" && ACLOCAL=`typep "$ACLOCAL"` ||
