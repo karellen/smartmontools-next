@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.37
-Release: 	7%{?dist}
+Release: 	8%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -45,6 +45,7 @@ the /etc/smartd.conf configuration file.
 %patch3 -p1 -b .addrinfo
 
 %build
+./autogen.sh
 %configure
 make CFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-fpie -Wl,-z,relro,-z,now"
 
@@ -93,6 +94,12 @@ exit 0
 %exclude %{_sbindir}/smartd-conf.py[co]
 
 %changelog
+* Wed Oct 31 2007 Tomas Smetana <tsmetana@redhat.com> - 1:5.37-8
+- fix #359561 - typo in smartd-conf.py causes smartd to skip all disks
+
+* Mon Oct 15 2007 Tomas Smetana <tsmetana@redhat.com> - 1:5.37-7.1
+- improved patch for getaddrinfo
+
 * Fri Oct 12 2007 Tomas Smetana <tsmetana@redhat.com> - 1:5.37-7
 - replace gethostbyname with getaddrinfo
 
