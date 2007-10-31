@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.37
-Release: 	8.1%{?dist}
+Release: 	8.2%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -96,6 +96,9 @@ exit 0
 %exclude %{_sbindir}/smartd-conf.py[co]
 
 %changelog
+* Wed Oct 31 2007 Tomas Smetana <tsmetana@redhat.com> - 1:5.37-8.2
+- rebuild (one more error in autogen.sh)
+
 * Wed Oct 31 2007 Tomas Smetana <tsmetana@redhat.com> - 1:5.37-8.1
 - fix build with new automake
 
