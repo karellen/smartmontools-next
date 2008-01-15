@@ -83,7 +83,7 @@ for drive in drives:
         driver = ''
         comment = ''
     if getfile("%s/device/vendor" % drive.sysfspath) == 'ATA':
-        driver = '-d ata'
+        driver = '-d sat'
         if float(getfile("/sys/module/libata/version")) < 1.20:
             comment = "# not yet supported in this kernel version\n# "
     if not comment:
