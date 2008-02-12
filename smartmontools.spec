@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.37
-Release: 	8.4%{?dist}
+Release: 	8.5%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -109,6 +109,9 @@ exit 0
 %exclude %{_sbindir}/smartd-conf.py[co]
 
 %changelog
+* Tue Feb 12 2008 Tomas Smetana <tsmetana@redhat.com> - 1:5.37-8.5
+- rebuild (gcc-4.3)
+
 * Tue Jan 15 2008 Tomas Smetana <tsmetana@redhat.com> - 1:5.37-8.4
 - change '-d ata' to '-d sat' in the config script for SATA drives
 
