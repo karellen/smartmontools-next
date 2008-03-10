@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
-Version:	5.37
-Release: 	8.5%{?dist}
+Version:	5.38
+Release: 	1%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -10,10 +10,8 @@ Source0:	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 Source1:	smartd.initd
 Source2:	smartd-conf.py
 Source3:	smartmontools.sysconf
-Patch1:		smartmontools-5.37-cloexec.patch
-Patch2:		smartmontools-5.37-3ware.patch
-Patch3:     smartmontools-5.37-addrinfo.patch
-Patch4:     smartmontools-5.37-buildfix.patch
+Patch1:		smartmontools-5.38-cloexec.patch
+Patch2:     smartmontools-5.37-addrinfo.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 PreReq:		/sbin/chkconfig /sbin/service
@@ -42,9 +40,7 @@ the /etc/smartd.conf configuration file.
 %prep
 %setup -q
 %patch1 -p1 -b .cloexec
-%patch2 -p1 -b .3ware
-%patch3 -p1 -b .addrinfo
-%patch4 -p1 -b .buildfix
+%patch2 -p1 -b .addrinfo
 
 %build
 ./autogen.sh
@@ -109,6 +105,9 @@ exit 0
 %exclude %{_sbindir}/smartd-conf.py[co]
 
 %changelog
+* Mon Mar 10 2008 Tomas Smetana <tsmetana@redhat.com> - 1:5.38-1
+- new upstream version
+
 * Tue Feb 12 2008 Tomas Smetana <tsmetana@redhat.com> - 1:5.37-8.5
 - rebuild (gcc-4.3)
 
