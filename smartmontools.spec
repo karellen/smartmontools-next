@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.38
-Release: 	1%{?dist}
+Release: 	2%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -105,6 +105,9 @@ exit 0
 %exclude %{_sbindir}/smartd-conf.py[co]
 
 %changelog
+* Tue Mar 18 2008 Tomas Smetana <tsmetana@redhat.com> - 1:5.38-2
+- fix FD_CLOEXEC on SCSI device file descriptors not being set
+
 * Mon Mar 10 2008 Tomas Smetana <tsmetana@redhat.com> - 1:5.38-1
 - new upstream version
 
