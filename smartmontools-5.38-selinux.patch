@@ -1,0 +1,160 @@
+diff -up sm5.mine/configure.in.selinux sm5.mine/configure.in
+--- sm5.mine/configure.in.selinux	2008-04-01 09:01:02.000000000 +0200
++++ sm5.mine/configure.in	2008-03-28 11:06:05.000000000 +0100
+@@ -136,6 +136,16 @@ AC_ARG_ENABLE(sample,[AC_HELP_STRING([--
+ AC_SUBST(smartd_suffix)
+ AM_CONDITIONAL(SMARTD_SUFFIX, test $smartd_suffix)
+ 
++AC_ARG_WITH(selinux,[AC_HELP_STRING([--with-selinux],[Enables SELinux support])],
++	[
++		AC_CHECK_HEADERS([selinux/selinux.h], [], [echo "*** Error: Missing SELinux header files";exit 1])
++		AC_CHECK_LIB(selinux, matchpathcon, [with_selinux=yes], [echo "*** Error: Missing or incorrect SELinux library files"; exit 1],)
++	],[])
++AC_SUBST(with_selinux)
++if test "$with_selinux" = "yes"; then
++	AC_DEFINE(WITH_SELINUX, [1], [Define to 1 if SELinux support is enabled])
++fi
++
+ if test "$prefix" = "NONE"; then
+     dnl no prefix and no mandir, so use ${prefix}/share/man as default
+     if test "$mandir" = '${prefix}/man'; then
+@@ -151,7 +161,11 @@ dnl if OS not recognized, then use the o
+ case "${host}" in
+ 	*-*-linux*)
+ 		AC_SUBST([os_deps], ['os_linux.o cciss.o']) 
+-		AC_SUBST([os_libs], ['']) ;;
++		if test "$with_selinux" = "yes"; then
++			AC_SUBST([os_libs], ['-lselinux'])
++		else
++			AC_SUBST([os_libs], [''])
++		fi;;
+ 	*-*-freebsd*|*-*-dragonfly*|*-*-kfreebsd*-gnu*)
+ 		AC_SUBST([os_deps], ['os_freebsd.o cciss.o']) 
+ 		AC_SUBST([os_libs], ['-lcam']);;
+diff -up sm5.mine/os_linux.cpp.selinux sm5.mine/os_linux.cpp
+--- sm5.mine/os_linux.cpp.selinux	2008-04-01 09:01:14.000000000 +0200
++++ sm5.mine/os_linux.cpp	2008-04-01 12:28:04.000000000 +0200
+@@ -60,6 +60,9 @@
+ #ifndef makedev // old versions of types.h do not include sysmacros.h
+ #include <sys/sysmacros.h>
+ #endif
++#ifdef WITH_SELINUX
++#include <selinux/selinux.h>
++#endif
+ 
+ #include "int64.h"
+ #include "atacmds.h"
+@@ -105,6 +108,14 @@ int setup_3ware_nodes(const char *nodena
+   char             nodestring[NODE_STRING_LENGTH];
+   struct stat      stat_buf;
+   FILE             *file;
++  int              retval = 0;
++#ifdef WITH_SELINUX
++  security_context_t orig_context = NULL;
++  security_context_t node_context = NULL;
++  int                selinux_enabled  = is_selinux_enabled();
++  int                selinux_enforced = security_getenforce();
++#endif
++
+ 
+   /* First try to open up /proc/devices */
+   if (!(file = fopen("/proc/devices", "r"))) {
+@@ -129,18 +140,50 @@ int setup_3ware_nodes(const char *nodena
+     pout("No major number for /dev/%s listed in /proc/devices. Is the %s driver loaded?\n", nodename, driver_name);
+     return 2;
+   }
+-
++#ifdef WITH_SELINUX
++  /* Prepare a database of contexts for files in /dev
++   * and save the current context */
++  if (selinux_enabled) {
++    if (matchpathcon_init_prefix(NULL, "/dev") < 0)
++      pout("Error initializing contexts database for /dev");
++    if (getfscreatecon(&orig_context) < 0) {
++      pout("Error retrieving original SELinux fscreate context");
++      if (selinux_enforced)
++        matchpathcon_fini();
++        return 6;
++      }
++  }
++#endif
+   /* Now check if nodes are correct */
+   for (index=0; index<16; index++) {
+     sprintf(nodestring, "/dev/%s%d", nodename, index);
+-
++#ifdef WITH_SELINUX
++    /* Get context of the node and set it as the default */
++    if (selinux_enabled) {
++      if (matchpathcon(nodestring, S_IRUSR | S_IWUSR, &node_context) < 0) {
++        pout("Could not retreive context for %s", nodestring);
++        if (selinux_enforced) {
++          retval = 6;
++          break;
++        }
++      }
++      if (setfscreatecon(node_context) < 0) {
++        pout ("Error setting default fscreate context");
++        if (selinux_enforced) {
++          retval = 6;
++          break;
++        }
++      }
++    }
++#endif
+     /* Try to stat the node */
+     if ((stat(nodestring, &stat_buf))) {
+       /* Create a new node if it doesn't exist */
+       if (mknod(nodestring, S_IFCHR|0600, makedev(tw_major, index))) {
+         pout("problem creating 3ware device nodes %s", nodestring);
+         syserror("mknod");
+-        return 3;
++        retval = 3;
++        break;
+       }
+     }
+ 
+@@ -153,18 +196,41 @@ int setup_3ware_nodes(const char *nodena
+       if (unlink(nodestring)) {
+         pout("problem unlinking stale 3ware device node %s", nodestring);
+         syserror("unlink");
+-        return 4;
++        retval = 4;
++        break;
+       }
+ 
+       /* Make a new node */
+       if (mknod(nodestring, S_IFCHR|0600, makedev(tw_major, index))) {
+         pout("problem creating 3ware device nodes %s", nodestring);
+         syserror("mknod");
+-        return 5;
++        retval = 5;
++        break;
+       }
+     }
++#ifdef WITH_SELINUX
++    if (selinux_enabled && node_context) {
++      freecon(node_context);
++      node_context = NULL;
++    }
++#endif
+   }
+-  return 0;
++
++#ifdef WITH_SELINUX
++  if (selinux_enabled) {
++    if(setfscreatecon(orig_context) < 0) {
++      pout("Error re-setting original fscreate context");
++      if (selinux_enforced)
++        retval = 6;
++    }
++    if(orig_context)
++      freecon(orig_context);
++    if(node_context)
++      freecon(node_context);
++    matchpathcon_fini();
++  }
++#endif
++  return retval;
+ }
+ 
+ static char prev_scsi_dev[128];

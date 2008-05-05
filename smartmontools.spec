@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.38
-Release: 	2%{?dist}
+Release: 	4%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -12,6 +12,8 @@ Source2:	smartd-conf.py
 Source3:	smartmontools.sysconf
 Patch1:		smartmontools-5.38-cloexec.patch
 Patch2:     smartmontools-5.37-addrinfo.patch
+Patch3:     smartmontools-5.38-perc.patch
+Patch4:     smartmontools-5.38-selinux.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 PreReq:		/sbin/chkconfig /sbin/service
@@ -41,10 +43,12 @@ the /etc/smartd.conf configuration file.
 %setup -q
 %patch1 -p1 -b .cloexec
 %patch2 -p1 -b .addrinfo
+%patch3 -p1 -b .perc
+%patch4 -p1 -b .selinux
 
 %build
 ./autogen.sh
-%configure
+%configure --with-selinux
 make CFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-fpie -Wl,-z,relro,-z,now"
 
 %install
@@ -105,6 +109,13 @@ exit 0
 %exclude %{_sbindir}/smartd-conf.py[co]
 
 %changelog
+* Mon May 05 2008 Tomas Smetana <tsmetana@redhat.com> - 1:5.38-4
+- fix #232218 character devices /dev/twa* for 3ware 9000 series RAID
+  controllers are not created
+
+* Thu Mar 27 2008 Tomas Smetana <tsmetana@redhat.com> - 1:5.38-3
+- don't attempt to query DELL PERC controllers -- they'd go offline
+
 * Tue Mar 18 2008 Tomas Smetana <tsmetana@redhat.com> - 1:5.38-2
 - fix FD_CLOEXEC on SCSI device file descriptors not being set
 
