@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.38
-Release: 	4%{?dist}
+Release: 	4.1%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -18,7 +18,8 @@ Patch4:     smartmontools-5.38-selinux.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 PreReq:		/sbin/chkconfig /sbin/service
 Requires:	fileutils mailx
-BuildRequires: 	readline-devel ncurses-devel /usr/bin/aclocal /usr/bin/automake /usr/bin/autoconf util-linux groff gettext
+BuildRequires: readline-devel ncurses-devel /usr/bin/aclocal /usr/bin/automake /usr/bin/autoconf util-linux groff gettext
+BuildRequires: libselinux-devel
 Obsoletes:	kernel-utils
 ExclusiveArch:	i386 x86_64 %{arm} ia64 ppc ppc64
 
@@ -109,6 +110,9 @@ exit 0
 %exclude %{_sbindir}/smartd-conf.py[co]
 
 %changelog
+* Mon May 05 2008 Tomas Smetana <tsmetana@redhat.com> - 1:5.38-4.1
+- add libselinux-devel to BR
+
 * Mon May 05 2008 Tomas Smetana <tsmetana@redhat.com> - 1:5.38-4
 - fix #232218 character devices /dev/twa* for 3ware 9000 series RAID
   controllers are not created
