@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.38
-Release: 	5%{?dist}
+Release: 	6%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -40,7 +40,7 @@ failure.
 %build
 ./autogen.sh
 %configure --with-selinux
-make CFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-fpie -Wl,-z,relro,-z,now"
+make CXXFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie -Wl,-z,relro,-z,now"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -81,6 +81,9 @@ exit 0
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %changelog
+* Fri Aug 08 2008 Tomas Smetana <tsmetana@redhat.com> - 1:5.38-6
+- correct CXXFLAGS so the PIE code is produced
+
 * Mon May 12 2008 Tomas Smetana <tsmetana@redhat.com> - 1:5.38-5
 - remove config subpackage
 
