@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.38
-Release: 	6%{?dist}
+Release: 	7%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -13,13 +13,14 @@ Patch1:		smartmontools-5.38-cloexec.patch
 Patch2:     smartmontools-5.37-addrinfo.patch
 Patch3:     smartmontools-5.38-perc.patch
 Patch4:     smartmontools-5.38-selinux.patch
+Patch5:     smartmontools-5.38-defaultconf.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 PreReq:		/sbin/chkconfig /sbin/service
 Requires:	fileutils mailx
 BuildRequires: readline-devel ncurses-devel /usr/bin/aclocal /usr/bin/automake /usr/bin/autoconf util-linux groff gettext
 BuildRequires: libselinux-devel
-Obsoletes:	kernel-utils
+Obsoletes:	kernel-utils smartmontools-config
 ExclusiveArch:	i386 x86_64 %{arm} ia64 ppc ppc64
 
 %description
@@ -36,6 +37,7 @@ failure.
 %patch2 -p1 -b .addrinfo
 %patch3 -p1 -b .perc
 %patch4 -p1 -b .selinux
+%patch5 -p1 -b .defaultconf
 
 %build
 ./autogen.sh
@@ -81,6 +83,10 @@ exit 0
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %changelog
+* Mon Aug 11 2008 Tomas Smetana <tsmetana@redhat.com> - 1:5.38-7
+- fix #458549 - obsolete smartmontools-config
+- change the default configuration file
+
 * Fri Aug 08 2008 Tomas Smetana <tsmetana@redhat.com> - 1:5.38-6
 - correct CXXFLAGS so the PIE code is produced
 
