@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.38
-Release: 	8%{?dist}
+Release: 	9%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -21,7 +21,7 @@ Requires:	fileutils mailx
 BuildRequires: readline-devel ncurses-devel /usr/bin/aclocal /usr/bin/automake /usr/bin/autoconf util-linux groff gettext
 BuildRequires: libselinux-devel
 Obsoletes:	kernel-utils smartmontools-config
-ExclusiveArch:	i386 x86_64 %{arm} ia64 ppc ppc64
+ExclusiveArch:	%{ix86} x86_64 %{arm} ia64 ppc ppc64
 
 %description
 The smartmontools package contains two utility programs (smartctl
@@ -83,6 +83,9 @@ exit 0
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %changelog
+* Fri Feb 27 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 1:5.38-9
+- fix ExclusiveArch
+
 * Wed Feb 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:5.38-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
 
