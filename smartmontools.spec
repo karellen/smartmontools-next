@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.38
-Release: 	9%{?dist}
+Release: 	10%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -14,13 +14,10 @@ Patch2:     smartmontools-5.37-addrinfo.patch
 Patch3:     smartmontools-5.38-perc.patch
 Patch4:     smartmontools-5.38-selinux.patch
 Patch5:     smartmontools-5.38-defaultconf.patch
-
-BuildRoot:	%{_tmppath}/%{name}-%{version}-root
-PreReq:		/sbin/chkconfig /sbin/service
-Requires:	fileutils mailx
-BuildRequires: readline-devel ncurses-devel /usr/bin/aclocal /usr/bin/automake /usr/bin/autoconf util-linux groff gettext
+BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+Requires:	fileutils mailx chkconfig initscripts
+BuildRequires: readline-devel ncurses-devel /usr/bin/aclocal util-linux groff gettext
 BuildRequires: libselinux-devel
-Obsoletes:	kernel-utils smartmontools-config
 ExclusiveArch:	%{ix86} x86_64 %{arm} ia64 ppc ppc64
 
 %description
@@ -61,28 +58,25 @@ if [ "$1" = "0" ] ; then
  /sbin/service smartd stop >/dev/null 2>&1
  /sbin/chkconfig --del smartd
 fi
-exit 0
 
 %post
 /sbin/chkconfig --add smartd
 
-%triggerpostun -- kernel-utils
-/sbin/chkconfig --add smartd
-exit 0
-
 %files
-%defattr(-,root,root)
+%defattr(-,root,root,-)
 %doc AUTHORS CHANGELOG COPYING INSTALL NEWS README
 %doc TODO WARNINGS examplescripts smartd.conf
 %{_sbindir}/smartd
 %{_sbindir}/smartctl
-%{_sysconfdir}/rc.d/init.d/smartd
+%{_initrddir}/smartd
 %{_mandir}/man?/smart*.*
-# %ghost %verify(not md5 size mtime) %config(noreplace) %{_sysconfdir}/smartd.conf
 %config(noreplace) %{_sysconfdir}/smartd.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %changelog
+* Mon Mar 09 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-10
+- cleanup for merge review
+
 * Fri Feb 27 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 1:5.38-9
 - fix ExclusiveArch
 
