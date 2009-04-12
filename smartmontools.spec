@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.38
-Release: 	10%{?dist}
+Release: 	11%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -18,7 +18,6 @@ BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	fileutils mailx chkconfig initscripts
 BuildRequires: readline-devel ncurses-devel /usr/bin/aclocal util-linux groff gettext
 BuildRequires: libselinux-devel
-ExclusiveArch:	%{ix86} x86_64 %{arm} ia64 ppc ppc64
 
 %description
 The smartmontools package contains two utility programs (smartctl
@@ -39,8 +38,11 @@ failure.
 %build
 ./autogen.sh
 %configure --with-selinux
+%ifarch sparc64
+make CXXFLAGS="$RPM_OPT_FLAGS -fPIE" LDFLAGS="-pie -Wl,-z,relro,-z,now"
+%else
 make CXXFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie -Wl,-z,relro,-z,now"
-
+%endif
 %install
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
@@ -74,6 +76,10 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %changelog
+* Sat Apr 11 2009 Dennis Gilmore <dennis@ausil.us> - 1:5.38-11
+- remove ExclusiveArch use -fPIE on sparc64  
+- tested builds on sparcv9 sparc64 and s390x
+
 * Mon Mar 09 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-10
 - cleanup for merge review
 
