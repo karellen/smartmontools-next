@@ -17,7 +17,7 @@ Patch5:     smartmontools-5.38-defaultconf.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	fileutils mailx chkconfig initscripts
 BuildRequires: readline-devel ncurses-devel /usr/bin/aclocal util-linux groff gettext
-BuildRequires: libselinux-devel automake
+BuildRequires: libselinux-devel
 
 %description
 The smartmontools package contains two utility programs (smartctl
@@ -36,7 +36,6 @@ failure.
 %patch5 -p1 -b .defaultconf
 
 %build
-./autogen.sh
 %configure --with-selinux
 %ifarch sparc64
 make CXXFLAGS="$RPM_OPT_FLAGS -fPIE" LDFLAGS="-pie -Wl,-z,relro,-z,now"
@@ -77,7 +76,7 @@ fi
 
 %changelog
 * Thu Jun 11 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-12
-- add automake to buildrequires
+- drop autogen call 
 
 * Sat Apr 11 2009 Dennis Gilmore <dennis@ausil.us> - 1:5.38-11
 - remove ExclusiveArch use -fPIE on sparc64  
