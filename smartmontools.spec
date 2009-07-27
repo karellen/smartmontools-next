@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.38
-Release: 	12%{?dist}
+Release: 	13%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -75,6 +75,9 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %changelog
+* Sun Jul 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:5.38-13
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
+
 * Thu Jun 11 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-12
 - drop autogen call 
 
