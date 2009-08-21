@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.38
-Release: 	13%{?dist}
+Release: 	14%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -14,6 +14,7 @@ Patch2:     smartmontools-5.37-addrinfo.patch
 Patch3:     smartmontools-5.38-perc.patch
 Patch4:     smartmontools-5.38-selinux.patch
 Patch5:     smartmontools-5.38-defaultconf.patch
+Patch6:     smartmontools-5.38-lowcap.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	fileutils mailx chkconfig initscripts
 BuildRequires: readline-devel ncurses-devel /usr/bin/aclocal util-linux groff gettext
@@ -34,6 +35,7 @@ failure.
 %patch3 -p1 -b .perc
 %patch4 -p1 -b .selinux
 %patch5 -p1 -b .defaultconf
+%patch6 -p1 -b .lowcap
 
 %build
 %configure --with-selinux
@@ -75,6 +77,9 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %changelog
+* Fri Aug 21 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-14
+- drop all unnecessary capabilities (#517728)
+
 * Sun Jul 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:5.38-13
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
