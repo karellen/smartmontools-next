@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.38
-Release: 	15%{?dist}
+Release: 	16%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -79,6 +79,9 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %changelog
+* Wed Aug 26 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-16
+- extend capability scanning devices
+
 * Wed Aug 26 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-15
 - updated patch for lower capabilities (#517728)
 - added buildrequires libcap-ng-devel

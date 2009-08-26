@@ -1,6 +1,6 @@
-diff -urp smartmontools-5.38.orig/configure.in smartmontools-5.38/configure.in
---- smartmontools-5.38.orig/configure.in	2009-08-16 07:42:57.000000000 -0400
-+++ smartmontools-5.38/configure.in	2009-08-21 12:07:15.000000000 -0400
+diff -up smartmontools-5.38/configure.in.lowcap smartmontools-5.38/configure.in
+--- smartmontools-5.38/configure.in.lowcap	2009-08-26 17:40:36.942297517 +0200
++++ smartmontools-5.38/configure.in	2009-08-26 17:40:36.951298527 +0200
 @@ -143,6 +143,40 @@ if test "$with_selinux" = "yes"; then
  	AC_DEFINE(WITH_SELINUX, [1], [Define to 1 if SELinux support is enabled])
  fi
@@ -42,9 +42,9 @@ diff -urp smartmontools-5.38.orig/configure.in smartmontools-5.38/configure.in
  if test "$prefix" = "NONE"; then
      dnl no prefix and no mandir, so use ${prefix}/share/man as default
      if test "$mandir" = '${prefix}/man'; then
-diff -urp smartmontools-5.38.orig/Makefile.am smartmontools-5.38/Makefile.am
---- smartmontools-5.38.orig/Makefile.am	2009-08-16 07:42:57.000000000 -0400
-+++ smartmontools-5.38/Makefile.am	2009-08-21 11:28:22.000000000 -0400
+diff -up smartmontools-5.38/Makefile.am.lowcap smartmontools-5.38/Makefile.am
+--- smartmontools-5.38/Makefile.am.lowcap	2007-04-01 18:49:44.000000000 +0200
++++ smartmontools-5.38/Makefile.am	2009-08-26 17:40:36.951298527 +0200
 @@ -35,7 +35,7 @@ smartd_SOURCES =  smartd.cpp      \
                    utility.cpp     \
                    utility.h
@@ -54,9 +54,9 @@ diff -urp smartmontools-5.38.orig/Makefile.am smartmontools-5.38/Makefile.am
  smartd_DEPENDENCIES = @os_deps@
  
  EXTRA_smartd_SOURCES = os_darwin.cpp    \
-diff -urp smartmontools-5.38.orig/smartd.cpp smartmontools-5.38/smartd.cpp
---- smartmontools-5.38.orig/smartd.cpp	2009-08-16 07:42:57.000000000 -0400
-+++ smartmontools-5.38/smartd.cpp	2009-08-21 11:28:22.000000000 -0400
+diff -up smartmontools-5.38/smartd.cpp.lowcap smartmontools-5.38/smartd.cpp
+--- smartmontools-5.38/smartd.cpp.lowcap	2009-08-26 17:40:36.937297475 +0200
++++ smartmontools-5.38/smartd.cpp	2009-08-26 17:57:48.558423011 +0200
 @@ -74,6 +74,10 @@ extern "C" int __stdcall FreeConsole(voi
  #include <io.h> // setmode()
  #endif // __CYGWIN__
@@ -76,8 +76,8 @@ diff -urp smartmontools-5.38.orig/smartd.cpp smartmontools-5.38/smartd.cpp
 +#ifdef HAVE_LIBCAP_NG
 +  // Drop capabilities
 +  capng_clear(CAPNG_SELECT_BOTH);
-+  capng_update(CAPNG_ADD, (capng_type_t)(CAPNG_EFFECTIVE|CAPNG_PERMITTED),
-+               CAP_SYS_ADMIN);
++  capng_updatev(CAPNG_ADD, (capng_type_t)(CAPNG_EFFECTIVE|CAPNG_PERMITTED),
++               CAP_SYS_ADMIN, CAP_SYS_RAWIO, -1);
 +  capng_apply(CAPNG_SELECT_BOTH);
 +#endif
    
