@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.38
-Release: 	14%{?dist}
+Release: 	15%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -18,7 +18,7 @@ Patch6:     smartmontools-5.38-lowcap.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	fileutils mailx chkconfig initscripts
 BuildRequires: readline-devel ncurses-devel /usr/bin/aclocal util-linux groff gettext
-BuildRequires: libselinux-devel
+BuildRequires: libselinux-devel libcap-ng-devel
 
 %description
 The smartmontools package contains two utility programs (smartctl
@@ -38,7 +38,9 @@ failure.
 %patch6 -p1 -b .lowcap
 
 %build
-%configure --with-selinux
+ln -s CHANGELOG ChangeLog
+autoreconf -i
+%configure --with-selinux --with-libcap-ng=yes
 %ifarch sparc64
 make CXXFLAGS="$RPM_OPT_FLAGS -fPIE" LDFLAGS="-pie -Wl,-z,relro,-z,now"
 %else
@@ -77,6 +79,10 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %changelog
+* Wed Aug 26 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-15
+- updated patch for lower capabilities (#517728)
+- added buildrequires libcap-ng-devel
+
 * Fri Aug 21 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-14
 - drop all unnecessary capabilities (#517728)
 
