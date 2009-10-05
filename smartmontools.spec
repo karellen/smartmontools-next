@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.38
-Release: 	17%{?dist}
+Release: 	18%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -79,6 +79,9 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %changelog
+* Mon Oct 05 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-18
+- bump release for rebuild
+
 * Mon Oct 05 2009 Michal Hlaivnka <mhlavink@redhat.com> - 1:5.38-17
 - make capabilities optional
 - fix capabilities for 3ware contollers (#526626)
