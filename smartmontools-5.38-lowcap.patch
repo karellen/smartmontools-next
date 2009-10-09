@@ -1,6 +1,6 @@
 diff -up smartmontools-5.38/configure.in.lowcap smartmontools-5.38/configure.in
---- smartmontools-5.38/configure.in.lowcap	2009-10-05 15:45:16.419171091 +0200
-+++ smartmontools-5.38/configure.in	2009-10-05 15:45:16.425170899 +0200
+--- smartmontools-5.38/configure.in.lowcap	2009-10-09 10:19:22.395700024 +0200
++++ smartmontools-5.38/configure.in	2009-10-09 10:19:22.431698988 +0200
 @@ -143,6 +143,40 @@ if test "$with_selinux" = "yes"; then
  	AC_DEFINE(WITH_SELINUX, [1], [Define to 1 if SELinux support is enabled])
  fi
@@ -44,7 +44,7 @@ diff -up smartmontools-5.38/configure.in.lowcap smartmontools-5.38/configure.in
      if test "$mandir" = '${prefix}/man'; then
 diff -up smartmontools-5.38/Makefile.am.lowcap smartmontools-5.38/Makefile.am
 --- smartmontools-5.38/Makefile.am.lowcap	2007-04-01 18:49:44.000000000 +0200
-+++ smartmontools-5.38/Makefile.am	2009-10-05 15:45:16.426170991 +0200
++++ smartmontools-5.38/Makefile.am	2009-10-09 10:19:22.434699065 +0200
 @@ -35,7 +35,7 @@ smartd_SOURCES =  smartd.cpp      \
                    utility.cpp     \
                    utility.h
@@ -56,7 +56,7 @@ diff -up smartmontools-5.38/Makefile.am.lowcap smartmontools-5.38/Makefile.am
  EXTRA_smartd_SOURCES = os_darwin.cpp    \
 diff -up smartmontools-5.38/smartd.8.in.lowcap smartmontools-5.38/smartd.8.in
 --- smartmontools-5.38/smartd.8.in.lowcap	2008-03-04 23:09:47.000000000 +0100
-+++ smartmontools-5.38/smartd.8.in	2009-10-05 15:46:16.711483245 +0200
++++ smartmontools-5.38/smartd.8.in	2009-10-09 10:19:22.439699030 +0200
 @@ -145,6 +145,12 @@ input. This is useful for commands like:
  to perform quick and simple checks without a configuration file.
  
@@ -71,8 +71,8 @@ diff -up smartmontools-5.38/smartd.8.in.lowcap smartmontools-5.38/smartd.8.in
  Runs \fBsmartd\fP in "debug" mode. In this mode, it displays status
  information to STDOUT rather than logging it to SYSLOG and does not
 diff -up smartmontools-5.38/smartd.cpp.lowcap smartmontools-5.38/smartd.cpp
---- smartmontools-5.38/smartd.cpp.lowcap	2009-10-05 15:45:16.412170973 +0200
-+++ smartmontools-5.38/smartd.cpp	2009-10-05 15:45:16.434170827 +0200
+--- smartmontools-5.38/smartd.cpp.lowcap	2009-10-09 10:19:22.312699527 +0200
++++ smartmontools-5.38/smartd.cpp	2009-10-09 10:43:45.294698988 +0200
 @@ -74,6 +74,10 @@ extern "C" int __stdcall FreeConsole(voi
  #include <io.h> // setmode()
  #endif // __CYGWIN__
@@ -134,15 +134,26 @@ diff -up smartmontools-5.38/smartd.cpp.lowcap smartmontools-5.38/smartd.cpp
    PrintOut(LOG_INFO,"  -V         Print License, Copyright, and version information\n");
  #endif
  }
-@@ -3890,6 +3916,7 @@ void ParseOpts(int argc, char **argv){
+@@ -3866,7 +3892,7 @@ void ParseOpts(int argc, char **argv){
+   char *tailptr;
+   long lchecktime;
+   // Please update GetValidArgList() if you edit shortopts
+-  const char *shortopts = "c:l:q:dDni:p:r:Vh?";
++  const char *shortopts = "c:l:q:dDni:p:r:VCh?";
+ #ifdef HAVE_GETOPT_LONG
+   char *arg;
+   // Please update GetValidArgList() if you edit longopts
+@@ -3890,6 +3916,9 @@ void ParseOpts(int argc, char **argv){
      { "copyright",      no_argument,       0, 'V' },
      { "help",           no_argument,       0, 'h' },
      { "usage",          no_argument,       0, 'h' },
++#ifdef HAVE_LIBCAP_NG
 +    { "usecapabilities",no_argument,       0, 'C' },
++#endif
      { 0,                0,                 0, 0   }
    };
  #endif
-@@ -4030,6 +4057,12 @@ void ParseOpts(int argc, char **argv){
+@@ -4030,6 +4059,12 @@ void ParseOpts(int argc, char **argv){
        PrintCopyleft();
        EXIT(0);
        break;
@@ -155,7 +166,7 @@ diff -up smartmontools-5.38/smartd.cpp.lowcap smartmontools-5.38/smartd.cpp
      case 'h':
        // help: print summary of command-line options
        debugmode=1;
-@@ -4408,6 +4441,16 @@ static int smartd_main(int argc, char **
+@@ -4408,6 +4443,16 @@ static int smartd_main(int argc, char **
    
    // don't exit on bad checksums
    con->checksumfail=0;
@@ -172,7 +183,7 @@ diff -up smartmontools-5.38/smartd.cpp.lowcap smartmontools-5.38/smartd.cpp
    
    // the main loop of the code
    while (1){
-@@ -4482,7 +4525,15 @@ static int smartd_main(int argc, char **
+@@ -4482,7 +4527,15 @@ static int smartd_main(int argc, char **
          PrintTestSchedule(ATAandSCSIdevlist);
          EXIT(0);
        }

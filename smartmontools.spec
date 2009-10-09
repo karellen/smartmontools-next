@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.38
-Release: 	18%{?dist}
+Release: 	19%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -79,6 +79,9 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %changelog
+* Fri Oct 09 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-19
+- make init script lsb compliant (#528016)
+
 * Mon Oct 05 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-18
 - bump release for rebuild
 
