@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.38
-Release: 	20%{?dist}
+Release: 	21%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -79,6 +79,9 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %changelog
+* Mon Oct 12 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-21
+- warn about disabled mail only if capabilities are enabled
+
 * Fri Oct 09 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-20
 - fix init script for case when no action was specified
 

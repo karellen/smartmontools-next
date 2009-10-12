@@ -1,6 +1,6 @@
 diff -up smartmontools-5.38/configure.in.lowcap smartmontools-5.38/configure.in
---- smartmontools-5.38/configure.in.lowcap	2009-10-09 10:19:22.395700024 +0200
-+++ smartmontools-5.38/configure.in	2009-10-09 10:19:22.431698988 +0200
+--- smartmontools-5.38/configure.in.lowcap	2009-10-12 17:00:53.889673785 +0200
++++ smartmontools-5.38/configure.in	2009-10-12 17:00:53.896678618 +0200
 @@ -143,6 +143,40 @@ if test "$with_selinux" = "yes"; then
  	AC_DEFINE(WITH_SELINUX, [1], [Define to 1 if SELinux support is enabled])
  fi
@@ -44,7 +44,7 @@ diff -up smartmontools-5.38/configure.in.lowcap smartmontools-5.38/configure.in
      if test "$mandir" = '${prefix}/man'; then
 diff -up smartmontools-5.38/Makefile.am.lowcap smartmontools-5.38/Makefile.am
 --- smartmontools-5.38/Makefile.am.lowcap	2007-04-01 18:49:44.000000000 +0200
-+++ smartmontools-5.38/Makefile.am	2009-10-09 10:19:22.434699065 +0200
++++ smartmontools-5.38/Makefile.am	2009-10-12 17:00:53.896678618 +0200
 @@ -35,7 +35,7 @@ smartd_SOURCES =  smartd.cpp      \
                    utility.cpp     \
                    utility.h
@@ -56,7 +56,7 @@ diff -up smartmontools-5.38/Makefile.am.lowcap smartmontools-5.38/Makefile.am
  EXTRA_smartd_SOURCES = os_darwin.cpp    \
 diff -up smartmontools-5.38/smartd.8.in.lowcap smartmontools-5.38/smartd.8.in
 --- smartmontools-5.38/smartd.8.in.lowcap	2008-03-04 23:09:47.000000000 +0100
-+++ smartmontools-5.38/smartd.8.in	2009-10-09 10:19:22.439699030 +0200
++++ smartmontools-5.38/smartd.8.in	2009-10-12 17:00:53.902672971 +0200
 @@ -145,6 +145,12 @@ input. This is useful for commands like:
  to perform quick and simple checks without a configuration file.
  
@@ -71,8 +71,8 @@ diff -up smartmontools-5.38/smartd.8.in.lowcap smartmontools-5.38/smartd.8.in
  Runs \fBsmartd\fP in "debug" mode. In this mode, it displays status
  information to STDOUT rather than logging it to SYSLOG and does not
 diff -up smartmontools-5.38/smartd.cpp.lowcap smartmontools-5.38/smartd.cpp
---- smartmontools-5.38/smartd.cpp.lowcap	2009-10-09 10:19:22.312699527 +0200
-+++ smartmontools-5.38/smartd.cpp	2009-10-09 10:43:45.294698988 +0200
+--- smartmontools-5.38/smartd.cpp.lowcap	2009-10-12 17:00:53.883672847 +0200
++++ smartmontools-5.38/smartd.cpp	2009-10-12 17:04:18.600547796 +0200
 @@ -74,6 +74,10 @@ extern "C" int __stdcall FreeConsole(voi
  #include <io.h> // setmode()
  #endif // __CYGWIN__
@@ -119,7 +119,7 @@ diff -up smartmontools-5.38/smartd.cpp.lowcap smartmontools-5.38/smartd.cpp
 +#ifdef HAVE_LIBCAP_NG
 +  PrintOut(LOG_INFO,"  -C, --usecapabilities\n");
 +  PrintOut(LOG_INFO,"        Use possix capabilities (EXPERIMENTAL).\n"
-+		    "        Warning: Mail notification does not work when used.\n");
++		    "        Warning: Mail notification does not work when used.\n\n");
 +#endif
  #ifdef _WIN32
    PrintOut(LOG_INFO,"  --service\n");
@@ -183,20 +183,23 @@ diff -up smartmontools-5.38/smartd.cpp.lowcap smartmontools-5.38/smartd.cpp
    
    // the main loop of the code
    while (1){
-@@ -4482,7 +4527,15 @@ static int smartd_main(int argc, char **
+@@ -4482,7 +4527,18 @@ static int smartd_main(int argc, char **
          PrintTestSchedule(ATAandSCSIdevlist);
          EXIT(0);
        }
 -      
++
 +#ifdef HAVE_LIBCAP_NG
-+      for(int i=numdevata+numdevscsi; i>1; i--) {
-+	  if (ATAandSCSIdevlist[i-1]->mailwarn) {
-+	      PrintOut(LOG_WARNING,"Mail can't be enabled together with --usecapabilities. All mail will be suppressed.\n");
-+	      break;
-+	  }
++      if (enable_capabilities) {
++        for(int i=0; i<numdevata+numdevscsi; i++) {
++          if (ATAandSCSIdevlist[i]->mailwarn) {
++            PrintOut(LOG_WARNING,"Mail can't be enabled together with --usecapabilities. All mail will be suppressed.\n");
++            break;
++          }
++        }
 +      }
-+	
 +#endif
++
        // reset signal
        caughtsigHUP=0;
      }
