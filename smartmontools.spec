@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.38
-Release: 	21%{?dist}
+Release:	22%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -10,15 +10,15 @@ Source0:	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 Source1:	smartd.initd
 Source2:	smartmontools.sysconf
 Patch1:		smartmontools-5.38-cloexec.patch
-Patch2:     smartmontools-5.37-addrinfo.patch
-Patch3:     smartmontools-5.38-perc.patch
-Patch4:     smartmontools-5.38-selinux.patch
-Patch5:     smartmontools-5.38-defaultconf.patch
-Patch6:     smartmontools-5.38-lowcap.patch
+Patch2:		smartmontools-5.37-addrinfo.patch
+Patch3:		smartmontools-5.38-perc.patch
+Patch4:		smartmontools-5.38-selinux.patch
+Patch5:		smartmontools-5.38-defaultconf.patch
+Patch6:		smartmontools-5.38-lowcap.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	fileutils mailx chkconfig initscripts
-BuildRequires: readline-devel ncurses-devel /usr/bin/aclocal util-linux groff gettext
-BuildRequires: libselinux-devel libcap-ng-devel
+BuildRequires:	readline-devel ncurses-devel /usr/bin/aclocal util-linux groff gettext
+BuildRequires:	libselinux-devel libcap-ng-devel
 
 %description
 The smartmontools package contains two utility programs (smartctl
@@ -37,6 +37,14 @@ failure.
 %patch5 -p1 -b .defaultconf
 %patch6 -p1 -b .lowcap
 
+# fix encoding
+for fe in AUTHORS CHANGELOG
+do
+  iconv -f iso-8859-1 -t utf-8 <$fe >$fe.new
+  touch -r $fe $fe.new
+  mv -f $fe.new $fe
+done
+
 %build
 ln -s CHANGELOG ChangeLog
 autoreconf -i
@@ -46,12 +54,14 @@ make CXXFLAGS="$RPM_OPT_FLAGS -fPIE" LDFLAGS="-pie -Wl,-z,relro,-z,now"
 %else
 make CXXFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie -Wl,-z,relro,-z,now"
 %endif
+
 %install
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
 
 #rm -f $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/smartd.conf
 rm -f examplescripts/Makefile*
+chmod a-x -R examplescripts/*
 install -D -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/smartd
 install -D -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/smartmontools
 
@@ -73,13 +83,16 @@ fi
 %doc TODO WARNINGS examplescripts smartd.conf
 %{_sbindir}/smartd
 %{_sbindir}/smartctl
-%{_initrddir}/smartd
+%{_initddir}/smartd
 %{_mandir}/man?/smart*.*
 %config(noreplace) %{_sysconfdir}/smartd.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %changelog
-* Mon Oct 12 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-21
+* Mon Nov 02 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-22
+- spec cleanup
+
+* Mon Oct 12 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-21 
 - warn about disabled mail only if capabilities are enabled
 
 * Fri Oct 09 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-20
