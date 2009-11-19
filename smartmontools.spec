@@ -1,20 +1,17 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.38
-Release:	22%{?dist}
+Release:	23.20091119svn%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
-Source0:	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
+Source0:	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.snap20091119.tar.gz
 Source1:	smartd.initd
 Source2:	smartmontools.sysconf
-Patch1:		smartmontools-5.38-cloexec.patch
-Patch2:		smartmontools-5.37-addrinfo.patch
-Patch3:		smartmontools-5.38-perc.patch
-Patch4:		smartmontools-5.38-selinux.patch
-Patch5:		smartmontools-5.38-defaultconf.patch
-Patch6:		smartmontools-5.38-lowcap.patch
+# fedora specific
+Patch1:		smartmontools-5.38-defaultconf.patch
+Patch2:		smartmontools-5.38-lowcap.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	fileutils mailx chkconfig initscripts
 BuildRequires:	readline-devel ncurses-devel /usr/bin/aclocal util-linux groff gettext
@@ -29,13 +26,9 @@ utilities will provide advanced warning of disk degradation and
 failure.
 
 %prep
-%setup -q
-%patch1 -p1 -b .cloexec
-%patch2 -p1 -b .addrinfo
-%patch3 -p1 -b .perc
-%patch4 -p1 -b .selinux
-%patch5 -p1 -b .defaultconf
-%patch6 -p1 -b .lowcap
+%setup -q -n %{name}-5.39
+%patch1 -p1 -b .defaultconf
+%patch2 -p1 -b .lowcap
 
 # fix encoding
 for fe in AUTHORS CHANGELOG
@@ -47,7 +40,7 @@ done
 
 %build
 ln -s CHANGELOG ChangeLog
-autoreconf -i
+autoreconf -fiv
 %configure --with-selinux --with-libcap-ng=yes
 %ifarch sparc64
 make CXXFLAGS="$RPM_OPT_FLAGS -fPIE" LDFLAGS="-pie -Wl,-z,relro,-z,now"
@@ -64,6 +57,9 @@ rm -f examplescripts/Makefile*
 chmod a-x -R examplescripts/*
 install -D -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/smartd
 install -D -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/smartmontools
+
+# TODO: remove once 5.39 is released
+rm -rf $RPM_BUILD_ROOT%{_docdir}/%{name}-5.39
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -89,6 +85,10 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %changelog
+* Thu Nov 19 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-23.20091119svn
+- update to svn snapshot 2009-11-19
+- remove upstreamed patches
+
 * Mon Nov 02 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-22
 - spec cleanup
 
