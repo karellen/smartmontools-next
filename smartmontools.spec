@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.38
-Release:	23.20091119svn%{?dist}
+Release:	24.20091119svn%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -85,6 +85,9 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %changelog
+* Mon Nov 23 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-24.20091119svn
+- move powermode option from sysconfig to smartd.conf (#539760)
+
 * Thu Nov 19 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-23.20091119svn
 - update to svn snapshot 2009-11-19
 - remove upstreamed patches
