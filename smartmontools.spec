@@ -1,12 +1,13 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.38
-Release:	24.20091119svn%{?dist}
+Release:	25.20091119svn%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
-Source0:	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.snap20091119.tar.gz
+#Source0:	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
+Source0:	%{name}-%{version}.snap20091119.tar.gz
 Source1:	smartd.initd
 Source2:	smartmontools.sysconf
 # fedora specific
@@ -14,7 +15,7 @@ Patch1:		smartmontools-5.38-defaultconf.patch
 Patch2:		smartmontools-5.38-lowcap.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	fileutils mailx chkconfig initscripts
-BuildRequires:	readline-devel ncurses-devel /usr/bin/aclocal util-linux groff gettext
+BuildRequires:	readline-devel ncurses-devel automake util-linux groff gettext
 BuildRequires:	libselinux-devel libcap-ng-devel
 
 %description
@@ -85,6 +86,9 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %changelog
+* Wed Nov 25 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-25.20091119svn
+- spec cleanup
+
 * Mon Nov 23 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-24.20091119svn
 - move powermode option from sysconfig to smartd.conf (#539760)
 
