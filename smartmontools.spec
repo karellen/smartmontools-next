@@ -1,18 +1,20 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
-Version:	5.38
-Release:	25.20091119svn%{?dist}
+Version:	5.39
+Release:	0.1.rc1%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
 #Source0:	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
-Source0:	%{name}-%{version}.snap20091119.tar.gz
+Source0:	%{name}-%{version}-rc1.tar.gz
 Source1:	smartd.initd
 Source2:	smartmontools.sysconf
+
 # fedora specific
 Patch1:		smartmontools-5.38-defaultconf.patch
 Patch2:		smartmontools-5.38-lowcap.patch
+
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	fileutils mailx chkconfig initscripts
 BuildRequires:	readline-devel ncurses-devel automake util-linux groff gettext
@@ -86,6 +88,9 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %changelog
+* Wed Dec 02 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.39-0.1.rc1
+- update to 5.39-rc1
+
 * Wed Nov 25 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.38-25.20091119svn
 - spec cleanup
 
