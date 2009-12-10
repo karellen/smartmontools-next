@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.39
-Release:	0.1.rc1%{?dist}
+Release:	1%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -29,7 +29,7 @@ utilities will provide advanced warning of disk degradation and
 failure.
 
 %prep
-%setup -q -n %{name}-5.39
+%setup -q
 %patch1 -p1 -b .defaultconf
 %patch2 -p1 -b .lowcap
 
@@ -61,9 +61,6 @@ chmod a-x -R examplescripts/*
 install -D -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/smartd
 install -D -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/smartmontools
 
-# TODO: remove once 5.39 is released
-rm -rf $RPM_BUILD_ROOT%{_docdir}/%{name}-5.39
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -88,6 +85,9 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %changelog
+* Wed Dec 10 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.39-1
+- update to 5.39
+
 * Wed Dec 02 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.39-0.1.rc1
 - update to 5.39-rc1
 
