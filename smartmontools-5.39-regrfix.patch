@@ -1,0 +1,286 @@
+diff -Naurp ../smartmontools-5.39.regfix/atacmds.cpp ../smartmontools-5.39/atacmds.cpp
+--- ../smartmontools-5.39.regfix/atacmds.cpp	2010-01-20 15:47:48.099341028 +0100
++++ ../smartmontools-5.39/atacmds.cpp	2010-01-20 16:13:58.380345000 +0100
+@@ -2370,13 +2370,17 @@ int ataPrintSmartSelfTestlog(const ata_s
+       uint64_t lba48 = (log->lbafirstfailure < 0xffffffff ? log->lbafirstfailure : 0xffffffffffffULL);
+ 
+       // Print entry
+-      bool errorfound = ataPrintSmartSelfTestEntry(testno,
+-        log->selftestnumber, log->selfteststatus, log->timestamp,
+-        lba48, !allentries, noheaderprinted);
+-
+-      // keep track of time of most recent error
+-      if (errorfound && !hours)
+-        hours=log->timestamp;
++      if (ataPrintSmartSelfTestEntry(testno,
++            log->selftestnumber, log->selfteststatus,
++            log->timestamp, lba48, !allentries, noheaderprinted)) {
++
++        // Self-test showed an error
++        retval++;
++
++        // keep track of time of most recent error
++        if (!hours)
++          hours = log->timestamp;
++      }
+     }
+   }
+   if (!allentries && retval)
+diff -Naurp ../smartmontools-5.39.regfix/ataprint.cpp ../smartmontools-5.39/ataprint.cpp
+--- ../smartmontools-5.39.regfix/ataprint.cpp	2010-01-20 15:47:48.099341028 +0100
++++ ../smartmontools-5.39/ataprint.cpp	2010-01-20 16:12:24.039465040 +0100
+@@ -3,8 +3,8 @@
+  *
+  * Home page of code is: http://smartmontools.sourceforge.net
+  *
+- * Copyright (C) 2002-9 Bruce Allen <smartmontools-support@lists.sourceforge.net>
+- * Copyright (C) 2008-9 Christian Franke <smartmontools-support@lists.sourceforge.net>
++ * Copyright (C) 2002-10 Bruce Allen <smartmontools-support@lists.sourceforge.net>
++ * Copyright (C) 2008-10 Christian Franke <smartmontools-support@lists.sourceforge.net>
+  * Copyright (C) 1999-2000 Michael Cornwell <cornwell@acm.org>
+  *
+  * This program is free software; you can redistribute it and/or modify
+@@ -2066,7 +2066,6 @@ int ataPrintMain (ata_device * device, c
+       || options.smart_ext_selftest_log
+       || options.sataphy
+       || !options.log_requests.empty() ) {
+-    PRINT_ON(con);
+     if (isGeneralPurposeLoggingCapable(&drive))
+       pout("General Purpose Logging (GPL) feature set supported\n");
+ 
+@@ -2087,31 +2086,26 @@ int ataPrintMain (ata_device * device, c
+     // Read SMART Log directory
+     if (need_smart_logdir) {
+       if (ataReadLogDirectory(device, &smartlogdir_buf, false)){
+-        PRINT_OFF(con);
+         pout("Read SMART Log Directory failed.\n\n");
+         failuretest(OPTIONAL_CMD, returnval|=FAILSMART);
+       }
+       else
+         smartlogdir = &smartlogdir_buf;
+     }
+-    PRINT_ON(con);
+ 
+     // Read GP Log directory
+     if (need_gp_logdir) {
+       if (ataReadLogDirectory(device, &gplogdir_buf, true)){
+-        PRINT_OFF(con);
+         pout("Read GP Log Directory failed.\n\n");
+         failuretest(OPTIONAL_CMD, returnval|=FAILSMART);
+       }
+       else
+         gplogdir = &gplogdir_buf;
+     }
+-    PRINT_ON(con);
+ 
+     // Print log directories
+     if ((options.gp_logdir && gplogdir) || (options.smart_logdir && smartlogdir))
+       PrintLogDirectories(gplogdir, smartlogdir);
+-    PRINT_OFF(con);
+ 
+     // Print log pages
+     for (i = 0; i < options.log_requests.size(); i++) {
+diff -Naurp ../smartmontools-5.39.regfix/CHANGELOG ../smartmontools-5.39/CHANGELOG
+--- ../smartmontools-5.39.regfix/CHANGELOG	2010-01-20 15:47:48.100527305 +0100
++++ ../smartmontools-5.39/CHANGELOG	2010-01-20 16:28:38.174340078 +0100
+@@ -45,6 +45,20 @@ NOTES FOR FUTURE RELEASES: see TODO file
+ 
+ smartmontools 5.39 2009-12-09
+ 
++  [CF] Linux: Allow smartd 'DEVICESCAN -d sat' (ticket #13).
++       Detects (S)ATA devices behind a standard SAT layer
++       (Vendor ID: "ATA     "), but not USB bridges with SAT support.
++       Only added for backward compatibility with 5.38.
++       No longer needed as 'DEVICESCAN' without '-d' includes these devices.
++
++  [CF] smartd: Fix directive '-l selftest' (ticket #36)
++       Regression was introduced with r2773.
++
++  [CF] smartctl: Don't print log directory if '-q errorsonly' is specified.
++
++  [CF] smartctl: Fix option '-q, --quietmode' (ticket #11).
++       Regression was introduced with r2807.
++
+   [CF] do_release: Commit CHANGELOG and NEWS also. Allow to review changes.
+ 
+   [CF] Linux: Add workaround for Adaptec series 2, 5 and 5Z controllers
+diff -Naurp ../smartmontools-5.39.regfix/NEWS ../smartmontools-5.39/NEWS
+--- ../smartmontools-5.39.regfix/NEWS	2010-01-20 15:47:48.104527238 +0100
++++ ../smartmontools-5.39/NEWS	2010-01-20 16:28:51.388652458 +0100
+@@ -8,6 +8,9 @@ http://smartmontools.svn.sourceforge.net
+ Date 2009-12-09
+ Summary: smartmontools release 5.39 (UNSTABLE/EXPERIMENTAL)
+ -----------------------------------------------------------
++- Fix regression in smartctl option '-q, --quietmode'.
++- Fix regression in smartd directive '-l selftest'
++- Linux: Allow smartd 'DEVICESCAN -d sat'.
+ - Sourcecode repository moved from CVS to SVN
+ - Support for USB devices with Cypress, JMicron and Sunplus USB bridges
+ - USB device type autodetection for some devices on Linux, Windows and FreeBSD
+diff -Naurp ../smartmontools-5.39.regfix/os_linux.cpp ../smartmontools-5.39/os_linux.cpp
+--- ../smartmontools-5.39.regfix/os_linux.cpp	2010-01-20 15:47:48.106527477 +0100
++++ ../smartmontools-5.39/os_linux.cpp	2010-01-20 16:28:19.456339800 +0100
+@@ -831,17 +831,22 @@ class linux_scsi_device
+   public /*extends*/ linux_smart_device
+ {
+ public:
+-  linux_scsi_device(smart_interface * intf, const char * dev_name, const char * req_type);
++  linux_scsi_device(smart_interface * intf, const char * dev_name,
++                    const char * req_type, bool scanning = false);
+ 
+   virtual smart_device * autodetect_open();
+ 
+   virtual bool scsi_pass_through(scsi_cmnd_io * iop);
++
++private:
++  bool m_scanning; ///< true if created within scan_smart_devices
+ };
+ 
+ linux_scsi_device::linux_scsi_device(smart_interface * intf,
+-  const char * dev_name, const char * req_type)
++  const char * dev_name, const char * req_type, bool scanning /*= false*/)
+ : smart_device(intf, dev_name, "scsi", req_type),
+-  linux_smart_device(O_RDWR | O_NONBLOCK, O_RDONLY | O_NONBLOCK)
++  linux_smart_device(O_RDWR | O_NONBLOCK, O_RDONLY | O_NONBLOCK),
++  m_scanning(scanning)
+ {
+ }
+ 
+@@ -2646,8 +2651,13 @@ smart_device * linux_scsi_device::autode
+     return this;
+ 
+   // No Autodetection if device type was specified by user
+-  if (*get_req_type())
+-    return this;
++  bool sat_only = false;
++  if (*get_req_type()) {
++    // Detect SAT if device object was created by scan_smart_devices().
++    if (!(m_scanning && !strcmp(get_req_type(), "sat")))
++      return this;
++    sat_only = true;
++  }
+ 
+   // The code below is based on smartd.cpp:SCSIFilterKnown()
+ 
+@@ -2668,36 +2678,43 @@ smart_device * linux_scsi_device::autode
+ 
+   int avail_len = req_buff[4] + 5;
+   int len = (avail_len < req_len ? avail_len : req_len);
+-  if (len < 36)
++  if (len < 36) {
++    if (sat_only) {
++      close();
++      set_err(EIO, "INQUIRY too short for SAT");
++    }
+     return this;
++  }
+ 
+   // Use INQUIRY to detect type
++  if (!sat_only) {
+ 
+-  // 3ware ?
+-  if (!memcmp(req_buff + 8, "3ware", 5) || !memcmp(req_buff + 8, "AMCC", 4)) {
+-    close();
+-    set_err(EINVAL, "AMCC/3ware controller, please try adding '-d 3ware,N',\n"
+-                    "you may need to replace %s with /dev/twaN or /dev/tweN", get_dev_name());
+-    return this;
+-  }
++    // 3ware ?
++    if (!memcmp(req_buff + 8, "3ware", 5) || !memcmp(req_buff + 8, "AMCC", 4)) {
++      close();
++      set_err(EINVAL, "AMCC/3ware controller, please try adding '-d 3ware,N',\n"
++                      "you may need to replace %s with /dev/twaN or /dev/tweN", get_dev_name());
++      return this;
++    }
+ 
+-  // DELL?
+-  if (!memcmp(req_buff + 8, "DELL    PERC", 12) || !memcmp(req_buff + 8, "MegaRAID", 8)) {
+-    close();
+-    set_err(EINVAL, "DELL or MegaRaid controller, please try adding '-d megaraid,N'");
+-    return this;
+-  }
++    // DELL?
++    if (!memcmp(req_buff + 8, "DELL    PERC", 12) || !memcmp(req_buff + 8, "MegaRAID", 8)) {
++      close();
++      set_err(EINVAL, "DELL or MegaRaid controller, please try adding '-d megaraid,N'");
++      return this;
++    }
+ 
+-  // Marvell ?
+-  if (len >= 42 && !memcmp(req_buff + 36, "MVSATA", 6)) {
+-    //pout("Device %s: using '-d marvell' for ATA disk with Marvell driver\n", get_dev_name());
+-    close();
+-    smart_device_auto_ptr newdev(
+-      new linux_marvell_device(smi(), get_dev_name(), get_req_type())
+-    );
+-    newdev->open(); // TODO: Can possibly pass open fd
+-    delete this;
+-    return newdev.release();
++    // Marvell ?
++    if (len >= 42 && !memcmp(req_buff + 36, "MVSATA", 6)) {
++      //pout("Device %s: using '-d marvell' for ATA disk with Marvell driver\n", get_dev_name());
++      close();
++      smart_device_auto_ptr newdev(
++        new linux_marvell_device(smi(), get_dev_name(), get_req_type())
++      );
++      newdev->open(); // TODO: Can possibly pass open fd
++      delete this;
++      return newdev.release();
++    }
+   }
+ 
+   // SAT or USB ?
+@@ -2709,6 +2726,11 @@ smart_device * linux_scsi_device::autode
+   }
+ 
+   // Nothing special found
++
++  if (sat_only) {
++    close();
++    set_err(EIO, "Not a SAT device");
++  }
+   return this;
+ }
+ 
+@@ -2891,7 +2913,7 @@ bool linux_smart_interface::get_dev_list
+       if (autodetect)
+         dev = autodetect_smart_device(name);
+       else if (is_scsi)
+-        dev = new linux_scsi_device(this, name, req_type);
++        dev = new linux_scsi_device(this, name, req_type, true /*scanning*/);
+       else
+         dev = new linux_ata_device(this, name, req_type);
+       if (dev) // autodetect_smart_device() may return nullptr.
+@@ -2917,7 +2939,8 @@ bool linux_smart_interface::scan_smart_d
+     type = "";
+ 
+   bool scan_ata  = (!*type || !strcmp(type, "ata" ));
+-  bool scan_scsi = (!*type || !strcmp(type, "scsi"));
++  // "sat" detection will be later handled in linux_scsi_device::autodetect_open()
++  bool scan_scsi = (!*type || !strcmp(type, "scsi") || !strcmp(type, "sat"));
+   if (!(scan_ata || scan_scsi))
+     return true;
+ 
+diff -Naurp ../smartmontools-5.39.regfix/smartctl.cpp ../smartmontools-5.39/smartctl.cpp
+--- ../smartmontools-5.39.regfix/smartctl.cpp	2010-01-20 15:47:48.215402112 +0100
++++ ../smartmontools-5.39/smartctl.cpp	2010-01-20 16:12:24.039465040 +0100
+@@ -3,8 +3,8 @@
+  *
+  * Home page of code is: http://smartmontools.sourceforge.net
+  *
+- * Copyright (C) 2002-9 Bruce Allen <smartmontools-support@lists.sourceforge.net>
+- * Copyright (C) 2008-9 Christian Franke <smartmontools-support@lists.sourceforge.net>
++ * Copyright (C) 2002-10 Bruce Allen <smartmontools-support@lists.sourceforge.net>
++ * Copyright (C) 2008-10 Christian Franke <smartmontools-support@lists.sourceforge.net>
+  * Copyright (C) 2000 Michael Cornwell <cornwell@acm.org>
+  *
+  * This program is free software; you can redistribute it and/or modify
+@@ -730,7 +730,7 @@ const char * parse_options(int argc, cha
+   // print output is switchable, then start with the print output
+   // turned off
+   if (con->printing_switchable)
+-    con->dont_print = false;
++    con->dont_print = true;
+ 
+   // error message if user has asked for more than one test
+   if (testcnt > 1) {

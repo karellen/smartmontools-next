@@ -1,19 +1,23 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.39
-Release:	1%{?dist}
+Release:	2%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
-#Source0:	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
-Source0:	%{name}-%{version}-rc1.tar.gz
+Source0:	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 Source1:	smartd.initd
 Source2:	smartmontools.sysconf
 
-# fedora specific
+#fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
+
+#libcap-ng new feature, testing for now
 Patch2:		smartmontools-5.38-lowcap.patch
+
+#fix some post-5.39 regressions, taken from upstream, for sm <= 5.39
+Patch3:		smartmontools-5.39-regrfix.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	fileutils mailx chkconfig initscripts
@@ -32,6 +36,7 @@ failure.
 %setup -q
 %patch1 -p1 -b .defaultconf
 %patch2 -p1 -b .lowcap
+%patch3 -p2 -b .regrfix
 
 # fix encoding
 for fe in AUTHORS CHANGELOG
@@ -43,7 +48,7 @@ done
 
 %build
 ln -s CHANGELOG ChangeLog
-autoreconf -fiv
+autoreconf -i
 %configure --with-selinux --with-libcap-ng=yes
 %ifarch sparc64
 make CXXFLAGS="$RPM_OPT_FLAGS -fPIE" LDFLAGS="-pie -Wl,-z,relro,-z,now"
@@ -85,6 +90,11 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 
 %changelog
+* Wed Jan 20 2010 Michal Hlavinka <mhlavink@redhat.com> - 1:5.39-2
+- fix DEVICESCAN -d sat
+- fix directive '-l selftest'
+- fix option '-q, --quietmode'
+
 * Wed Dec 10 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.39-1
 - update to 5.39
 
