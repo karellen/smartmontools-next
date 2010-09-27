@@ -1,12 +1,15 @@
+%global svnrev  r3169
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.39.1
-Release:	1%{?dist}
+Release:	2.%{?svnrev}%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
-Source0:	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
+#Source0:	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
+Source0:        smartmontools-%{svnrev}.tar.gz
+# ^^^ renamed: http://smartmontools.svn.sourceforge.net/viewvc/smartmontools/trunk/smartmontools/?view=tar 
 Source1:	smartd.initd
 Source2:	smartmontools.sysconf
 
@@ -14,7 +17,7 @@ Source2:	smartmontools.sysconf
 Patch1:		smartmontools-5.38-defaultconf.patch
 
 #libcap-ng new feature, testing for now
-Patch2:		smartmontools-5.38-lowcap.patch
+#Patch2:		smartmontools-5.38-lowcap.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	fileutils mailx chkconfig initscripts
@@ -30,9 +33,9 @@ utilities will provide advanced warning of disk degradation and
 failure.
 
 %prep
-%setup -q
+%setup -q -n %{name}
 %patch1 -p1 -b .defaultconf
-%patch2 -p1 -b .lowcap
+#%patch2 -p1 -b .lowcap
 
 # fix encoding
 for fe in AUTHORS CHANGELOG
@@ -62,6 +65,8 @@ chmod a-x -R examplescripts/*
 install -D -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/smartd
 install -D -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/smartmontools
 
+rm -rf $RPM_BUILD_ROOT/%{_docdir}/%{name}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -78,14 +83,20 @@ fi
 %defattr(-,root,root,-)
 %doc AUTHORS CHANGELOG COPYING INSTALL NEWS README
 %doc TODO WARNINGS examplescripts smartd.conf
-%{_sbindir}/smartd
-%{_sbindir}/smartctl
-%{_initddir}/smartd
-%{_mandir}/man?/smart*.*
 %config(noreplace) %{_sysconfdir}/smartd.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
+%{_initddir}/smartd
+%{_sbindir}/smartd
+%{_sbindir}/update-smart-drivedb
+%{_sbindir}/smartctl
+%{_mandir}/man?/smart*.*
+%{_datadir}/%{name}/drivedb.h
 
 %changelog
+* Mon Sep 27 2010 Michal Hlavinka <mhlavink@redhat.com> - 1:5.39.1-2.r3169
+- updated to r3169
+- ddds riverdb support for new devices (#637171)
+
 * Fri Jan 29 2010 Michal Hlavinka <mhlavink@redhat.com> - 1:5.39.1-1
 - updated to 5.39.1
 - Fix spin-up of SATA drive if '-n standby' is used.
