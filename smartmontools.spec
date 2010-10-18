@@ -1,23 +1,17 @@
-%global svnrev  r3169
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
-Version:	5.39.1
-Release:	2.%{?svnrev}%{?dist}
+Version:	5.40
+Release:	1%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
-#Source0:	http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
-Source0:        smartmontools-%{svnrev}.tar.gz
-# ^^^ renamed: http://smartmontools.svn.sourceforge.net/viewvc/smartmontools/trunk/smartmontools/?view=tar 
+Source0:	http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 Source1:	smartd.initd
 Source2:	smartmontools.sysconf
 
 #fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
-
-#libcap-ng new feature, testing for now
-#Patch2:		smartmontools-5.38-lowcap.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	fileutils mailx chkconfig initscripts
@@ -33,10 +27,8 @@ utilities will provide advanced warning of disk degradation and
 failure.
 
 %prep
-%setup -q -n %{name}
+%setup -q 
 %patch1 -p1 -b .defaultconf
-#%patch2 -p1 -b .lowcap
-
 # fix encoding
 for fe in AUTHORS CHANGELOG
 do
@@ -93,6 +85,9 @@ fi
 %{_datadir}/%{name}/drivedb.h
 
 %changelog
+* Mon Oct 18 2010 Michal Hlavinka <mhlavink@redhat.com> - 1:5.40-1
+- updated to 5.40 final
+
 * Mon Sep 27 2010 Michal Hlavinka <mhlavink@redhat.com> - 1:5.39.1-2.r3169
 - updated to r3169
 - ddds riverdb support for new devices (#637171)
