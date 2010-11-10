@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.40
-Release:	1%{?dist}
+Release:	2%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -64,12 +64,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %preun
 if [ "$1" = "0" ] ; then
- /sbin/service smartd stop >/dev/null 2>&1
+ /sbin/service smartd stop >/dev/null 2>&1 ||:
  /sbin/chkconfig --del smartd
 fi
 
 %post
 /sbin/chkconfig --add smartd
+/sbin/service smartd condrestart >/dev/null 2>&1 ||:
 
 %files
 %defattr(-,root,root,-)
