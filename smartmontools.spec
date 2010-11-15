@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.40
-Release:	2%{?dist}
+Release:	3%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -12,6 +12,9 @@ Source2:	smartmontools.sysconf
 
 #fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
+
+#from upstream, for smartmontools <= 5.40
+Patch2:         smartmontools-5.40-megaraid.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	fileutils mailx chkconfig initscripts
@@ -29,6 +32,8 @@ failure.
 %prep
 %setup -q 
 %patch1 -p1 -b .defaultconf
+%patch2 -p1 -b .megaraid
+
 # fix encoding
 for fe in AUTHORS CHANGELOG
 do
@@ -86,6 +91,9 @@ fi
 %{_datadir}/%{name}/drivedb.h
 
 %changelog
+* Mon Nov 15 2010 Michal Hlavinka <mhlavink@redhat.com> - 1:5.40-3
+- megaraid: Fix segfault on non-data commands (#577935)
+
 * Tue Nov 09 2010 Michal Hlavinka <mhlavink@redhat.com> - 1:5.40-2
 - don't forget to restart smartd service after update (#651211)
 
