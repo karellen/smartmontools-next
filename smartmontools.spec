@@ -86,6 +86,9 @@ fi
 %{_datadir}/%{name}/drivedb.h
 
 %changelog
+* Tue Nov 09 2010 Michal Hlavinka <mhlavink@redhat.com> - 1:5.40-2
+- don't forget to restart smartd service after update (#651211)
+
 * Mon Oct 18 2010 Michal Hlavinka <mhlavink@redhat.com> - 1:5.40-1
 - updated to 5.40 final
 
