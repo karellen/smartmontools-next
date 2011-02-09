@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.40
-Release:	3%{?dist}
+Release:	4%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -91,6 +91,9 @@ fi
 %{_datadir}/%{name}/drivedb.h
 
 %changelog
+* Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:5.40-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Mon Nov 15 2010 Michal Hlavinka <mhlavink@redhat.com> - 1:5.40-3
 - megaraid: Fix segfault on non-data commands (#577935)
 
