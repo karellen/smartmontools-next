@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.40
-Release:	4%{?dist}
+Release:	5%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -9,6 +9,7 @@ URL:		http://smartmontools.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 Source1:	smartd.initd
 Source2:	smartmontools.sysconf
+Source3:        smartd.service
 
 #fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
@@ -17,7 +18,11 @@ Patch1:		smartmontools-5.38-defaultconf.patch
 Patch2:         smartmontools-5.40-megaraid.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-Requires:	fileutils mailx chkconfig initscripts
+Requires:	fileutils mailx chkconfig
+Requires(triggerun):	systemd-units
+Requires(post):		systemd-units
+Requires(preun):	systemd-units
+Requires(postun):	systemd-units
 BuildRequires:	readline-devel ncurses-devel automake util-linux groff gettext
 BuildRequires:	libselinux-devel libcap-ng-devel
 
@@ -59,23 +64,39 @@ make DESTDIR=$RPM_BUILD_ROOT install
 #rm -f $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/smartd.conf
 rm -f examplescripts/Makefile*
 chmod a-x -R examplescripts/*
-install -D -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/smartd
-install -D -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/smartmontools
-
+install -D -p -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/smartmontools
+install -D -p -m 644 %{SOURCE3} $RPM_BUILD_ROOT/lib/systemd/system/smartd.service
+rm -rf $RPM_BUILD_ROOT/etc/{rc.d,init.d}
 rm -rf $RPM_BUILD_ROOT/%{_docdir}/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %preun
-if [ "$1" = "0" ] ; then
- /sbin/service smartd stop >/dev/null 2>&1 ||:
- /sbin/chkconfig --del smartd
+if [ $1 -eq 0 ] ; then
+        # Package removal, not upgrade
+        /bin/systemctl disable smartd.service >/dev/null 2>&1 || :
+        /bin/systemctl stop smartd.service > /dev/null 2>&1 || :
 fi
 
 %post
 /sbin/chkconfig --add smartd
 /sbin/service smartd condrestart >/dev/null 2>&1 ||:
+if [ $1 -eq 1 ]; then
+	/bin/systemctl enable smartd.service >/dev/null 2>&1 || :
+fi
+
+%postun
+/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+if [ $1 -ge 1 ] ; then
+        # Package upgrade, not uninstall
+        /bin/systemctl try-restart smartd.service >/dev/null 2>&1 || :
+fi
+
+
+%triggerun -- smartmontools < 1:5.40-4
+[ /sbin/chkconfig smartd ] && /bin/systemctl enable smartd.service >/dev/null 2>&1 || :
+
 
 %files
 %defattr(-,root,root,-)
@@ -83,7 +104,7 @@ fi
 %doc TODO WARNINGS examplescripts smartd.conf
 %config(noreplace) %{_sysconfdir}/smartd.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
-%{_initddir}/smartd
+/lib/systemd/system/smartd.service
 %{_sbindir}/smartd
 %{_sbindir}/update-smart-drivedb
 %{_sbindir}/smartctl
@@ -91,6 +112,9 @@ fi
 %{_datadir}/%{name}/drivedb.h
 
 %changelog
+* Wed Feb 09 2011 Michal Hlavinka <mhlavink@redhat.com> - 1:5.40-5
+- move to systemd
+
 * Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:5.40-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
