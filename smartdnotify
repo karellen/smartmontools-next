@@ -1,0 +1,9 @@
+#! /bin/sh
+
+# Send mail
+echo "$SMARTD_MESSAGE" | mail -s "$SMARTD_FAILTYPE" "$SMARTD_ADDRESS"
+
+# Notify desktop user
+/usr/bin/notify-send -t 0 "WARNING: Your hard drive is failing"
+"Description:
+$SMARTD_MESSAGE"

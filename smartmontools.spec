@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.40
-Release:	5%{?dist}
+Release:	6%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -10,6 +10,7 @@ Source0:	http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 Source1:	smartd.initd
 Source2:	smartmontools.sysconf
 Source3:        smartd.service
+Source4:        smartdnotify
 
 #fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
@@ -19,7 +20,8 @@ Patch2:         smartmontools-5.40-megaraid.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	fileutils mailx chkconfig
-Requires(triggerun):	systemd-units
+#new rpm does not handle this (yet?)
+#Requires(triggerun):	systemd-units
 Requires(post):		systemd-units
 Requires(preun):	systemd-units
 Requires(postun):	systemd-units
@@ -66,6 +68,7 @@ rm -f examplescripts/Makefile*
 chmod a-x -R examplescripts/*
 install -D -p -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/smartmontools
 install -D -p -m 644 %{SOURCE3} $RPM_BUILD_ROOT/lib/systemd/system/smartd.service
+install -D -p -m 755 %{SOURCE4} $RPM_BUILD_ROOT/%{_libexecdir}/%{name}/smartdnotify
 rm -rf $RPM_BUILD_ROOT/etc/{rc.d,init.d}
 rm -rf $RPM_BUILD_ROOT/%{_docdir}/%{name}
 
@@ -109,9 +112,13 @@ fi
 %{_sbindir}/update-smart-drivedb
 %{_sbindir}/smartctl
 %{_mandir}/man?/smart*.*
+%{_libexecdir}/%{name}/smartdnotify
 %{_datadir}/%{name}/drivedb.h
 
 %changelog
+* Thu Feb 17 2011 Michal Hlavinka <mhlavink@redhat.com> - 1:5.40-6
+- notify users when disk is failing
+
 * Wed Feb 09 2011 Michal Hlavinka <mhlavink@redhat.com> - 1:5.40-5
 - move to systemd
 
