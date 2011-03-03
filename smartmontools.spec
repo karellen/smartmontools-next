@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.40
-Release:	6%{?dist}
+Release:	7%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -96,9 +96,8 @@ if [ $1 -ge 1 ] ; then
         /bin/systemctl try-restart smartd.service >/dev/null 2>&1 || :
 fi
 
-
 %triggerun -- smartmontools < 1:5.40-4
-[ /sbin/chkconfig smartd ] && /bin/systemctl enable smartd.service >/dev/null 2>&1 || :
+/sbin/chkconfig smartd && /bin/systemctl enable smartd.service >/dev/null 2>&1 || :
 
 
 %files
@@ -112,10 +111,13 @@ fi
 %{_sbindir}/update-smart-drivedb
 %{_sbindir}/smartctl
 %{_mandir}/man?/smart*.*
-%{_libexecdir}/%{name}/smartdnotify
-%{_datadir}/%{name}/drivedb.h
+%{_libexecdir}/%{name}
+%{_datadir}/%{name}
 
 %changelog
+* Thu Mar 03 2011 Michal Hlavinka <mhlavink@redhat.com> - 1:5.40-7
+- own %%{_datadir}/%%{name} and %%{_libexecdir}/%%{name} dirs
+
 * Thu Feb 17 2011 Michal Hlavinka <mhlavink@redhat.com> - 1:5.40-6
 - notify users when disk is failing
 
