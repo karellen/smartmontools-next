@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.40
-Release:	7%{?dist}
+Release:	8%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -83,7 +83,6 @@ if [ $1 -eq 0 ] ; then
 fi
 
 %post
-/sbin/chkconfig --add smartd
 /sbin/service smartd condrestart >/dev/null 2>&1 ||:
 if [ $1 -eq 1 ]; then
 	/bin/systemctl enable smartd.service >/dev/null 2>&1 || :
@@ -115,6 +114,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Fri Mar 04 2011 Michal Hlavinka <mhlavink@redhat.com> - 1:5.40-8
+- don't call chkconfig add, we use systemd now
+ 
 * Thu Mar 03 2011 Michal Hlavinka <mhlavink@redhat.com> - 1:5.40-7
 - own %%{_datadir}/%%{name} and %%{_libexecdir}/%%{name} dirs
 
