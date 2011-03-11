@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.40
-Release:	8%{?dist}
+Release:	9%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -17,6 +17,8 @@ Patch1:		smartmontools-5.38-defaultconf.patch
 
 #from upstream, for smartmontools <= 5.40
 Patch2:         smartmontools-5.40-megaraid.patch
+
+Patch3:         smartmontools-5.40-manfix.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	fileutils mailx chkconfig
@@ -40,6 +42,7 @@ failure.
 %setup -q 
 %patch1 -p1 -b .defaultconf
 %patch2 -p1 -b .megaraid
+%patch3 -p1 -b .manfix
 
 # fix encoding
 for fe in AUTHORS CHANGELOG
@@ -114,6 +117,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Fri Mar 11 2011 Michal Hlavinka <mhlavink@redhat.com> - 1:5.40-9
+- fix typos in man page
+
 * Fri Mar 04 2011 Michal Hlavinka <mhlavink@redhat.com> - 1:5.40-8
 - don't call chkconfig add, we use systemd now
  

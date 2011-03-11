@@ -1,0 +1,21 @@
+diff -up smartmontools-5.40/smartctl.8.in.manfix smartmontools-5.40/smartctl.8.in
+--- smartmontools-5.40/smartctl.8.in.manfix	2010-10-16 15:09:11.000000000 +0200
++++ smartmontools-5.40/smartctl.8.in	2011-03-11 15:10:58.987936399 +0100
+@@ -970,7 +970,7 @@ SL directory by \'\-l directory,q\' or \
+ 
+ .I background
+ \- [SCSI only] the background scan results log outputs information derived
+-from Background Media Scans (BMS) done after power up and/or periodocally
++from Background Media Scans (BMS) done after power up and/or periodically
+ (e.g. every 24 hours) on recent SCSI disks. If supported, the BMS status
+ is output first, indicating whether a background scan is currently
+ underway (and if so a progress percentage), the amount of time the disk
+@@ -978,7 +978,7 @@ has been powered up and the number of sc
+ is a header and a line for each background scan "event". These will
+ typically be either recovered or unrecoverable errors. That latter group
+ may need some attention. There is a description of the background scan
+-mechansim in section 4.18 of SBC\-3 revision 6 (see www.t10.org ).
++mechanism in section 4.18 of SBC\-3 revision 6 (see www.t10.org ).
+ 
+ .I scttemp, scttempsts, scttemphist
+ \- [ATA only] prints the disk temperature information provided by the
