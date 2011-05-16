@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.40
-Release:	9%{?dist}
+Release:	10%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -117,6 +117,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Mon May 16 2011 Michal Hlavinka <mhlavink@redhat.com> - 1:5.40-10
+- fix path to notify script (#675778)
+
 * Fri Mar 11 2011 Michal Hlavinka <mhlavink@redhat.com> - 1:5.40-9
 - fix typos in man page
 
