@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
-Version:	5.40
-Release:	10%{?dist}
+Version:	5.41
+Release:	1%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -14,9 +14,6 @@ Source4:        smartdnotify
 
 #fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
-
-#from upstream, for smartmontools <= 5.40
-Patch2:         smartmontools-5.40-megaraid.patch
 
 Patch3:         smartmontools-5.40-manfix.patch
 
@@ -41,7 +38,6 @@ failure.
 %prep
 %setup -q 
 %patch1 -p1 -b .defaultconf
-%patch2 -p1 -b .megaraid
 %patch3 -p1 -b .manfix
 
 # fix encoding
@@ -117,6 +113,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Fri Jun 10 2011 Michal Hlavinka <mhlavink@redhat.com> - 1:5.41-1
+- updated to 5.41
+
 * Mon May 16 2011 Michal Hlavinka <mhlavink@redhat.com> - 1:5.40-10
 - fix path to notify script (#675778)
 
