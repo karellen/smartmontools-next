@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.41
-Release:	1%{?dist}
+Release:	2%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -77,14 +77,17 @@ rm -rf $RPM_BUILD_ROOT
 %preun
 if [ $1 -eq 0 ] ; then
         # Package removal, not upgrade
-        /bin/systemctl disable smartd.service >/dev/null 2>&1 || :
+        /bin/systemctl --no-reload disable smartd.service >/dev/null 2>&1 || :
         /bin/systemctl stop smartd.service > /dev/null 2>&1 || :
 fi
 
 %post
-/sbin/service smartd condrestart >/dev/null 2>&1 ||:
 if [ $1 -eq 1 ]; then
-	/bin/systemctl enable smartd.service >/dev/null 2>&1 || :
+	/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+else
+	if [ -n "$(find /etc/rc.d/rc5.d/ -name 'S??smartd' 2>/dev/null)" ]; then
+		/bin/systemctl enable smartd.service >/dev/null 2>&1 || :
+	fi
 fi
 
 %postun
@@ -93,10 +96,6 @@ if [ $1 -ge 1 ] ; then
         # Package upgrade, not uninstall
         /bin/systemctl try-restart smartd.service >/dev/null 2>&1 || :
 fi
-
-%triggerun -- smartmontools < 1:5.40-4
-/sbin/chkconfig smartd && /bin/systemctl enable smartd.service >/dev/null 2>&1 || :
-
 
 %files
 %defattr(-,root,root,-)
@@ -113,6 +112,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Mon Jun 13 2011 Michal Hlavinka <mhlavink@redhat.com> - 1:5.41-2
+- make F-14 (sysv init) -> F-15 (systemd) transition more robust
+
 * Fri Jun 10 2011 Michal Hlavinka <mhlavink@redhat.com> - 1:5.41-1
 - updated to 5.41
 
