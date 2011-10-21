@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
-Version:	5.41
-Release:	2%{?dist}
+Version:	5.42
+Release:	1%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -112,6 +112,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Fri Oct 21 2011 Michal Hlavinka <mhlavink@redhat.com> - 1:5.42-1
+- smartmontools updated to 5.42
+
 * Mon Jun 13 2011 Michal Hlavinka <mhlavink@redhat.com> - 1:5.41-2
 - make F-14 (sysv init) -> F-15 (systemd) transition more robust
 
