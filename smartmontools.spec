@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.41
-Release:	2%{?dist}
+Release:	3%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -84,6 +84,7 @@ fi
 %post
 if [ $1 -eq 1 ]; then
 	/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+	/bin/systemctl enable smartd.service >/dev/null 2>&1 || :
 else
 	if [ -n "$(find /etc/rc.d/rc5.d/ -name 'S??smartd' 2>/dev/null)" ]; then
 		/bin/systemctl enable smartd.service >/dev/null 2>&1 || :
@@ -112,6 +113,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Fri Dec 02 2011 Michal Hlavinka <mhlavink@redhat.com> - 1:5.41-3
+- enable smartd after installation
+
 * Mon Jun 13 2011 Michal Hlavinka <mhlavink@redhat.com> - 1:5.41-2
 - make F-14 (sysv init) -> F-15 (systemd) transition more robust
 
