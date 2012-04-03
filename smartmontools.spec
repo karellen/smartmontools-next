@@ -7,9 +7,7 @@ Group:		System Environment/Base
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
-Source1:	smartd.initd
 Source2:	smartmontools.sysconf
-Source3:        smartd.service
 Source4:        smartdnotify
 
 #fedora/rhel specific
@@ -51,7 +49,7 @@ done
 %build
 ln -s CHANGELOG ChangeLog
 autoreconf -i
-%configure --with-selinux --with-libcap-ng=yes
+%configure --with-selinux --with-libcap-ng=yes --with-systemdsystemunitdir=%{_unitdir}
 %ifarch sparc64
 make CXXFLAGS="$RPM_OPT_FLAGS -fPIE" LDFLAGS="-pie -Wl,-z,relro,-z,now"
 %else
@@ -66,7 +64,6 @@ make DESTDIR=$RPM_BUILD_ROOT install
 rm -f examplescripts/Makefile*
 chmod a-x -R examplescripts/*
 install -D -p -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/smartmontools
-install -D -p -m 644 %{SOURCE3} $RPM_BUILD_ROOT/lib/systemd/system/smartd.service
 install -D -p -m 755 %{SOURCE4} $RPM_BUILD_ROOT/%{_libexecdir}/%{name}/smartdnotify
 rm -rf $RPM_BUILD_ROOT/etc/{rc.d,init.d}
 rm -rf $RPM_BUILD_ROOT/%{_docdir}/%{name}
@@ -104,7 +101,7 @@ fi
 %doc TODO WARNINGS examplescripts smartd.conf
 %config(noreplace) %{_sysconfdir}/smartd.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
-/lib/systemd/system/smartd.service
+%{_unitdir}/smartd.service
 %{_sbindir}/smartd
 %{_sbindir}/update-smart-drivedb
 %{_sbindir}/smartctl
