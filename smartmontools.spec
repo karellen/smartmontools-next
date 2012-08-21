@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	5.43
-Release:	2%{?dist}
+Release:	3%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -73,28 +73,13 @@ rm -rf $RPM_BUILD_ROOT/%{_docdir}/%{name}
 rm -rf $RPM_BUILD_ROOT
 
 %preun
-if [ $1 -eq 0 ] ; then
-        # Package removal, not upgrade
-        /bin/systemctl --no-reload disable smartd.service >/dev/null 2>&1 || :
-        /bin/systemctl stop smartd.service > /dev/null 2>&1 || :
-fi
+%systemd_preun smartd.service
 
 %post
-if [ $1 -eq 1 ]; then
-	/bin/systemctl daemon-reload >/dev/null 2>&1 || :
-	/bin/systemctl enable smartd.service >/dev/null 2>&1 || :
-else
-	if [ -n "$(find /etc/rc.d/rc5.d/ -name 'S??smartd' 2>/dev/null)" ]; then
-		/bin/systemctl enable smartd.service >/dev/null 2>&1 || :
-	fi
-fi
+%systemd_post smartd.service
 
 %postun
-/bin/systemctl daemon-reload >/dev/null 2>&1 || :
-if [ $1 -ge 1 ] ; then
-        # Package upgrade, not uninstall
-        /bin/systemctl try-restart smartd.service >/dev/null 2>&1 || :
-fi
+%systemd_postun_with_restart smartd.service
 
 %files
 %defattr(-,root,root,-)
@@ -111,6 +96,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Tue Aug 21 2012 Michal Hlavinka <mhlavink@redhat.com> - 1:5.43-3
+- use new systemd rpm macros (#850316)
+
 * Sat Jul 21 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:5.43-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
