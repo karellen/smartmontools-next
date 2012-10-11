@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
-Version:	5.43
-Release:	3%{?dist}
+Version:	6.0
+Release:	1%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -96,6 +96,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}
 
 %changelog
+* Thu Oct 11 2012 Michal Hlavinka <mhlavink@redhat.com> - 1:6.0-1
+- smartmontools updated to 6.0
+
 * Tue Aug 21 2012 Michal Hlavinka <mhlavink@redhat.com> - 1:5.43-3
 - use new systemd rpm macros (#850316)
 
