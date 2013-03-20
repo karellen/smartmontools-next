@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
-Version:	6.0
-Release:	2%{?dist}
+Version:	6.1
+Release:	1%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -12,8 +12,6 @@ Source4:        smartdnotify
 
 #fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
-
-Patch3:         smartmontools-5.40-manfix.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	fileutils mailx chkconfig
@@ -37,10 +35,9 @@ failure.
 %prep
 %setup -q 
 %patch1 -p1 -b .defaultconf
-%patch3 -p1 -b .manfix
 
 # fix encoding
-for fe in AUTHORS CHANGELOG
+for fe in AUTHORS ChangeLog
 do
   iconv -f iso-8859-1 -t utf-8 <$fe >$fe.new
   touch -r $fe $fe.new
@@ -48,9 +45,8 @@ do
 done
 
 %build
-ln -s CHANGELOG ChangeLog
 autoreconf -i
-%configure --with-selinux --with-libcap-ng=yes --with-systemdsystemunitdir=%{_unitdir}
+%configure --with-selinux --with-libcap-ng=yes --with-systemdsystemunitdir=%{_unitdir} --sysconfdir=%{_sysconfdir}/%name/
 %ifarch sparc64
 make CXXFLAGS="$RPM_OPT_FLAGS -fPIE" LDFLAGS="-pie -Wl,-z,relro,-z,now"
 %else
@@ -66,6 +62,7 @@ rm -f examplescripts/Makefile*
 chmod a-x -R examplescripts/*
 install -D -p -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/smartmontools
 install -D -p -m 755 %{SOURCE4} $RPM_BUILD_ROOT/%{_libexecdir}/%{name}/smartdnotify
+mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/smartd_warning.d
 rm -rf $RPM_BUILD_ROOT/etc/{rc.d,init.d}
 rm -rf $RPM_BUILD_ROOT/%{_docdir}/%{name}
 
@@ -75,6 +72,17 @@ rm -rf $RPM_BUILD_ROOT
 %preun
 %systemd_preun smartd.service
 
+%pre
+if [ $1 = 2 ] # only during update
+then
+  # for Fedora 19-22
+  if [ -f %{_sysconfdir}/smartd.conf -a ! -e %{_sysconfdir}/%name ]
+  then
+    mkdir -p %{_sysconfdir}/%{name}
+    cp -p %{_sysconfdir}/smartd.conf %{_sysconfdir}/%{name}
+  fi
+fi
+
 %post
 %systemd_post smartd.service
 
@@ -83,9 +91,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc AUTHORS CHANGELOG COPYING INSTALL NEWS README
+%doc AUTHORS ChangeLog COPYING INSTALL NEWS README
 %doc TODO WARNINGS examplescripts smartd.conf
-%config(noreplace) %{_sysconfdir}/smartd.conf
+%dir %{_sysconfdir}/%name
+%dir %{_sysconfdir}/%name/smartd_warning.d
+%config(noreplace) %{_sysconfdir}/%{name}/smartd.conf
+%config(noreplace) %{_sysconfdir}/%{name}/smartd_warning.sh
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 %{_unitdir}/smartd.service
 %{_sbindir}/smartd
@@ -96,6 +107,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}
 
 %changelog
+* Wed Mar 20 2013 Michal Hlavinka <mhlavink@redhat.com> - 1:6.1-1
+- smartmontools updated to 6.1
+
 * Fri Feb 15 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:6.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
