@@ -1,14 +1,14 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	6.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 Source2:	smartmontools.sysconf
-Source4:        smartdnotify
+Source4:	smartdnotify
 
 #fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
@@ -57,7 +57,6 @@ make CXXFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie -Wl,-z,relro,-z,now"
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
 
-#rm -f $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/smartd.conf
 rm -f examplescripts/Makefile*
 chmod a-x -R examplescripts/*
 install -D -p -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/smartmontools
@@ -107,6 +106,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Mon Jul 22 2013 Michal Hlavinka <mhlavink@redhat.com> - 1:6.1-2
+- spec cleanup
+
 * Wed Mar 20 2013 Michal Hlavinka <mhlavink@redhat.com> - 1:6.1-1
 - smartmontools updated to 6.1
 
@@ -183,7 +185,7 @@ fi
 - fix directive '-l selftest'
 - fix option '-q, --quietmode'
 
-* Wed Dec 10 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.39-1
+* Thu Dec 10 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.39-1
 - update to 5.39
 
 * Wed Dec 02 2009 Michal Hlavinka <mhlavink@redhat.com> - 1:5.39-0.1.rc1
