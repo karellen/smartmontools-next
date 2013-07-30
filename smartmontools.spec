@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
-Version:	6.1
-Release:	2%{?dist}
+Version:	6.2
+Release:	1%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -106,6 +106,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Tue Jul 30 2013 Michal Hlavinka <mhlavink@redhat.com> - 1:6.2-1
+- smartmontools updated to 6.2
+
 * Mon Jul 22 2013 Michal Hlavinka <mhlavink@redhat.com> - 1:6.1-2
 - spec cleanup
 
