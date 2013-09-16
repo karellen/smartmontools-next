@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	6.2
-Release:	1%{?dist}
+Release:	2%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -52,6 +52,8 @@ make CXXFLAGS="$RPM_OPT_FLAGS -fPIE" LDFLAGS="-pie -Wl,-z,relro,-z,now"
 %else
 make CXXFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie -Wl,-z,relro,-z,now"
 %endif
+
+sed -i 's|/etc/smartmontools/sysconfig|/etc/sysconfig|g' smartd.service
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -106,6 +108,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Mon Sep 16 2013 Michal Hlavinka <mhlavink@redhat.com> - 1:6.2-2
+- smartd service file wrong path to environment file (#998225)
+
 * Tue Jul 30 2013 Michal Hlavinka <mhlavink@redhat.com> - 1:6.2-1
 - smartmontools updated to 6.2
 
