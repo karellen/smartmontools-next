@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	6.2
-Release:	3%{?dist}
+Release:	4%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -14,7 +14,7 @@ Source4:	smartdnotify
 Patch1:		smartmontools-5.38-defaultconf.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-Requires:	fileutils mailx sendmail
+Requires:	fileutils mailx MTA
 #new rpm does not handle this (yet?)
 #Requires(triggerun):	systemd-units
 Requires(post):		systemd-units
@@ -108,6 +108,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Tue Apr 15 2014 Michal Hlavinka <mhlavink@redhat.com> - 1:6.2-4
+- use MTA instead of sendmail as a requirement (#1048614)
+
 * Thu Apr 10 2014 Michal Hlavinka <mhlavink@redhat.com> - 1:6.2-3
 - add mail requires (#1048614)
 
