@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	6.2
-Release:	5%{?dist}
+Release:	6%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -108,6 +108,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:6.2-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Thu Apr 17 2014 Michal Hlavinka <mhlavink@redhat.com> - 1:6.2-5
 - require /usr/sbin/sendmail as MTA is not provided by all packages (#1048618)
 
