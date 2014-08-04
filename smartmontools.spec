@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
-Version:	6.2
-Release:	7%{?dist}
+Version:	6.3
+Release:	1%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -9,10 +9,12 @@ URL:		http://smartmontools.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 Source2:	smartmontools.sysconf
 Source4:	smartdnotify
+#semi-automatic update of drivedb.h
+%global		UrlSource5	http://sourceforge.net/p/smartmontools/code/HEAD/tree/trunk/smartmontools/drivedb.h?format=raw
+Source5:	drivedb.h
 
 #fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
-Patch2:		smartmontools-6.22-newdrivedb.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires:	fileutils mailx %{_sbindir}/sendmail
@@ -36,7 +38,10 @@ failure.
 %prep
 %setup -q 
 %patch1 -p1 -b .defaultconf
-%patch2 -p1 -b .newdrivedb
+
+# update SOURCE5 on maintainer's machine prior commiting, there's no internet connection on builders
+curl %{UrlSource5} -o %{SOURCE5} ||:
+cp %{SOURCE5} .
 
 # fix encoding
 for fe in AUTHORS ChangeLog
@@ -106,10 +111,14 @@ fi
 %{_sbindir}/update-smart-drivedb
 %{_sbindir}/smartctl
 %{_mandir}/man?/smart*.*
+%{_mandir}/man?/update-smart*.*
 %{_libexecdir}/%{name}
 %{_datadir}/%{name}
 
 %changelog
+* Mon Aug 04 2014 Michal Hlavinka <mhlavink@redhat.com> - 1:6.3-1
+- smartmontools updated to 6.3
+
 * Thu Jul 17 2014 Michal Hlavinka <mhlavink@redhat.com> - 1:6.2-7
 - update drivedb database (#954162)
 
