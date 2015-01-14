@@ -1,7 +1,10 @@
 #! /bin/sh
 
 # Send mail
-echo "$SMARTD_MESSAGE" | mail -s "$SMARTD_FAILTYPE" "$SMARTD_ADDRESS"
+if which mail >/dev/null 2>&1
+then
+  echo "$SMARTD_MESSAGE" | mail -s "$SMARTD_FAILTYPE" "$SMARTD_ADDRESS"
+fi
 
 # Notify desktop user
 MESSAGE="WARNING: Your hard drive is failing"

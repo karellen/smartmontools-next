@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	6.3
-Release:	2%{?dist}
+Release:	3%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -17,7 +17,7 @@ Source5:	drivedb.h
 Patch1:		smartmontools-5.38-defaultconf.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-Requires:	fileutils mailx %{_sbindir}/sendmail
+Requires:	fileutils
 #new rpm does not handle this (yet?)
 #Requires(triggerun):	systemd-units
 Requires(post):		systemd-units
@@ -116,6 +116,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Wed Jan 14 2015 Michal Hlavinka <mhlavink@redhat.com> - 1:6.3-3
+- do not require sendmail
+
 * Mon Aug 18 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:6.3-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
