@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
-Version:	6.3
-Release:	4%{?dist}
+Version:	6.4
+Release:	1%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -100,7 +100,7 @@ fi
 %files
 %defattr(-,root,root,-)
 %doc AUTHORS ChangeLog COPYING INSTALL NEWS README
-%doc TODO WARNINGS examplescripts smartd.conf
+%doc TODO examplescripts smartd.conf
 %dir %{_sysconfdir}/%name
 %dir %{_sysconfdir}/%name/smartd_warning.d
 %config(noreplace) %{_sysconfdir}/%{name}/smartd.conf
@@ -116,6 +116,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Fri Jun 05 2015 Michal Hlavinka <mhlavink@redhat.com> - 1:6.4-1
+- smartmontools updated to 6.4
+
 * Sat May 02 2015 Kalev Lember <kalevlember@gmail.com> - 1:6.3-4
 - Rebuilt for GCC 5 C++11 ABI change
 
