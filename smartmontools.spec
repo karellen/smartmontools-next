@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	6.4
-Release:	2%{?dist}
+Release:	3%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -42,14 +42,6 @@ failure.
 # update SOURCE5 on maintainer's machine prior commiting, there's no internet connection on builders
 curl %{UrlSource5} -o %{SOURCE5} ||:
 cp %{SOURCE5} .
-
-# fix encoding
-for fe in AUTHORS ChangeLog
-do
-  iconv -f iso-8859-1 -t utf-8 <$fe >$fe.new
-  touch -r $fe $fe.new
-  mv -f $fe.new $fe
-done
 
 %build
 autoreconf -i
@@ -116,6 +108,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Tue Jun 23 2015 Michal Hlavinka <mhlavink@redhat.com> - 1:6.4-3
+- it is no longer necessary to do utf-8 conversion of the AUTHORS and ChangeLog (#1228825)
+
 * Fri Jun 19 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:6.4-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
