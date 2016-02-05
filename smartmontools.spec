@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	6.4
-Release:	3%{?dist}
+Release:	4%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -108,6 +108,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Fri Feb 05 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1:6.4-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
 * Tue Jun 23 2015 Michal Hlavinka <mhlavink@redhat.com> - 1:6.4-3
 - it is no longer necessary to do utf-8 conversion of the AUTHORS and ChangeLog (#1228825)
 
