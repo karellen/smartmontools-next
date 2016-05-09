@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
-Version:	6.4
-Release:	4%{?dist}
+Version:	6.5
+Release:	1%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -10,7 +10,7 @@ Source0:	http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 Source2:	smartmontools.sysconf
 Source4:	smartdnotify
 #semi-automatic update of drivedb.h
-%global		UrlSource5	http://sourceforge.net/p/smartmontools/code/HEAD/tree/trunk/smartmontools/drivedb.h?format=raw
+%global		UrlSource5	https://sourceforge.net/p/smartmontools/code/HEAD/tree/trunk/smartmontools/drivedb.h?format=raw
 Source5:	drivedb.h
 
 #fedora/rhel specific
@@ -108,6 +108,9 @@ fi
 %{_datadir}/%{name}
 
 %changelog
+* Mon May 09 2016 Michal Hlavinka <mhlavink@redhat.com> - 1:6.5-1
+- smartmontools updated to 6.5
+
 * Fri Feb 05 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1:6.4-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
