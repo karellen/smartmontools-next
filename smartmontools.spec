@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	6.5
-Release:	1%{?dist}
+Release:	2%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -65,6 +65,7 @@ install -D -p -m 755 %{SOURCE4} $RPM_BUILD_ROOT/%{_libexecdir}/%{name}/smartdnot
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/smartd_warning.d
 rm -rf $RPM_BUILD_ROOT/etc/{rc.d,init.d}
 rm -rf $RPM_BUILD_ROOT/%{_docdir}/%{name}
+mkdir -p $RPM_BUILD_ROOT/%{_sharedstatedir}/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -106,8 +107,12 @@ fi
 %{_mandir}/man?/update-smart*.*
 %{_libexecdir}/%{name}
 %{_datadir}/%{name}
+%{_sharedstatedir}/%{name}
 
 %changelog
+* Fri Nov 11 2016 Michal Hlavinka <mhlavink@redhat.com> - 1:6.5-2
+- enable location for persistence data(#1291928)
+
 * Mon May 09 2016 Michal Hlavinka <mhlavink@redhat.com> - 1:6.5-1
 - smartmontools updated to 6.5
 
