@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
-Version:	6.5
-Release:	5%{?dist}
+Version:	6.6
+Release:	1%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -110,6 +110,9 @@ fi
 %{_sharedstatedir}/%{name}
 
 %changelog
+* Mon Nov 06 2017 Michal Hlavinka <mhlavink@redhat.com> - 1:6.6-1
+- smartmontools updated to 6.6
+
 * Thu Aug 03 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1:6.5-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
