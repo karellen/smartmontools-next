@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	6.6
-Release:	1%{?dist}
+Release:	2%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -17,7 +17,6 @@ Source5:	drivedb.h
 Patch1:		smartmontools-5.38-defaultconf.patch
 
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-Requires:	fileutils
 #new rpm does not handle this (yet?)
 #Requires(triggerun):	systemd-units
 Requires(post):		systemd-units
@@ -110,6 +109,9 @@ fi
 %{_sharedstatedir}/%{name}
 
 %changelog
+* Tue Nov 07 2017 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 1:6.6-2
+- Remove old crufty coreutils requires
+
 * Mon Nov 06 2017 Michal Hlavinka <mhlavink@redhat.com> - 1:6.6-1
 - smartmontools updated to 6.6
 
