@@ -16,7 +16,6 @@ Source5:	drivedb.h
 #fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
 
-BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 #new rpm does not handle this (yet?)
 #Requires(triggerun):	systemd-units
 Requires(post):		systemd-units
