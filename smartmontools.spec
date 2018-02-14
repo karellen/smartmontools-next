@@ -65,9 +65,6 @@ rm -rf $RPM_BUILD_ROOT/etc/{rc.d,init.d}
 rm -rf $RPM_BUILD_ROOT/%{_docdir}/%{name}
 mkdir -p $RPM_BUILD_ROOT/%{_sharedstatedir}/%{name}
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %preun
 %systemd_preun smartd.service
 
