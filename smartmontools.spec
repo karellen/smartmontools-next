@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	6.6
-Release:	3%{?dist}
+Release:	4%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -21,7 +21,7 @@ Patch1:		smartmontools-5.38-defaultconf.patch
 Requires(post):		systemd-units
 Requires(preun):	systemd-units
 Requires(postun):	systemd-units
-BuildRequires:	readline-devel ncurses-devel automake util-linux groff gettext
+BuildRequires:	gcc-c++ readline-devel ncurses-devel automake util-linux groff gettext
 BuildRequires:	libselinux-devel libcap-ng-devel
 BuildRequires:	systemd-units
 
@@ -105,6 +105,9 @@ fi
 %{_sharedstatedir}/%{name}
 
 %changelog
+* Wed Mar 07 2018 Michal Hlavinka <mhlavink@redhat.com> - 1:6.6-4
+- add gcc-c++ buildrequire
+
 * Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1:6.6-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
