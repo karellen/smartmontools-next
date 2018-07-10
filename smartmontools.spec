@@ -86,7 +86,6 @@ fi
 %systemd_postun_with_restart smartd.service
 
 %files
-%defattr(-,root,root,-)
 %doc AUTHORS ChangeLog COPYING INSTALL NEWS README
 %doc TODO examplescripts smartd.conf
 %dir %{_sysconfdir}/%name
