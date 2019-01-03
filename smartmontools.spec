@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	7.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -16,14 +16,10 @@ Source5:	drivedb.h
 #fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
 
-#new rpm does not handle this (yet?)
-#Requires(triggerun):	systemd-units
-Requires(post):		systemd-units
-Requires(preun):	systemd-units
-Requires(postun):	systemd-units
 BuildRequires:	gcc-c++ readline-devel ncurses-devel automake util-linux groff gettext
 BuildRequires:	libselinux-devel libcap-ng-devel
-BuildRequires:	systemd-units systemd-devel
+BuildRequires:	systemd systemd-devel
+%{?systemd_requires}
 
 %description
 The smartmontools package contains two utility programs (smartctl
@@ -45,25 +41,24 @@ cp %{SOURCE5} .
 autoreconf -i
 %configure --with-selinux --with-libcap-ng=yes --with-libsystemd --with-systemdsystemunitdir=%{_unitdir} --sysconfdir=%{_sysconfdir}/%name/
 %ifarch sparc64
-make CXXFLAGS="$RPM_OPT_FLAGS -fPIE" LDFLAGS="-pie -Wl,-z,relro,-z,now"
+%make_build CXXFLAGS="$RPM_OPT_FLAGS -fPIE" LDFLAGS="-pie -Wl,-z,relro,-z,now"
 %else
-make CXXFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie -Wl,-z,relro,-z,now"
+%make_build CXXFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie -Wl,-z,relro,-z,now"
 %endif
 
 sed -i 's|/etc/smartmontools/sysconfig|/etc/sysconfig|g' smartd.service
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make DESTDIR=$RPM_BUILD_ROOT install
+%make_install
 
 rm -f examplescripts/Makefile*
 chmod a-x -R examplescripts/*
 install -D -p -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/smartmontools
-install -D -p -m 755 %{SOURCE4} $RPM_BUILD_ROOT/%{_libexecdir}/%{name}/smartdnotify
+install -D -p -m 755 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/smartd_warning.d/smartdnotify
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/smartd_warning.d
 rm -rf $RPM_BUILD_ROOT/etc/{rc.d,init.d}
-rm -rf $RPM_BUILD_ROOT/%{_docdir}/%{name}
-mkdir -p $RPM_BUILD_ROOT/%{_sharedstatedir}/%{name}
+rm -rf $RPM_BUILD_ROOT%{_docdir}/%{name}
+mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/%{name}
 
 %preun
 %systemd_preun smartd.service
@@ -86,12 +81,14 @@ fi
 %systemd_postun_with_restart smartd.service
 
 %files
-%doc AUTHORS ChangeLog COPYING INSTALL NEWS README
+%doc AUTHORS ChangeLog INSTALL NEWS README
 %doc TODO examplescripts smartd.conf
+%license COPYING
 %dir %{_sysconfdir}/%name
 %dir %{_sysconfdir}/%name/smartd_warning.d
 %config(noreplace) %{_sysconfdir}/%{name}/smartd.conf
 %config(noreplace) %{_sysconfdir}/%{name}/smartd_warning.sh
+%config(noreplace) %{_sysconfdir}/%{name}/smartd_warning.d/smartdnotify
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 %{_unitdir}/smartd.service
 %{_sbindir}/smartd
@@ -99,11 +96,14 @@ fi
 %{_sbindir}/smartctl
 %{_mandir}/man?/smart*.*
 %{_mandir}/man?/update-smart*.*
-%{_libexecdir}/%{name}
 %{_datadir}/%{name}
 %{_sharedstatedir}/%{name}
 
 %changelog
+* Thu Jan 03 2019 Michal Hlavinka <mhlavink@redhat.com> - 1:7.0-2
+- use smartd_warning plugin to notify users (bug #1647534)
+- spec cleanup
+
 * Thu Jan 03 2019 Michal Hlavinka <mhlavink@redhat.com> - 1:7.0-1
 - smartmontools updated to 7.0
 
