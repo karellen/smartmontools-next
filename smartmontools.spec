@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	7.0
-Release:	2%{?dist}
+Release:	3%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -100,6 +100,9 @@ fi
 %{_sharedstatedir}/%{name}
 
 %changelog
+* Thu Jan 03 2019 Michal Hlavinka <mhlavink@redhat.com> - 1:7.0-3
+- update default config
+
 * Thu Jan 03 2019 Michal Hlavinka <mhlavink@redhat.com> - 1:7.0-2
 - use smartd_warning plugin to notify users (bug #1647534)
 - spec cleanup
