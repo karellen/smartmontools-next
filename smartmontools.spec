@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
-Version:	6.6
-Release:	5%{?dist}
+Version:	7.0
+Release:	1%{?dist}
 Epoch:		1
 Group:		System Environment/Base
 License:	GPLv2+
@@ -23,7 +23,7 @@ Requires(preun):	systemd-units
 Requires(postun):	systemd-units
 BuildRequires:	gcc-c++ readline-devel ncurses-devel automake util-linux groff gettext
 BuildRequires:	libselinux-devel libcap-ng-devel
-BuildRequires:	systemd-units
+BuildRequires:	systemd-units systemd-devel
 
 %description
 The smartmontools package contains two utility programs (smartctl
@@ -43,7 +43,7 @@ cp %{SOURCE5} .
 
 %build
 autoreconf -i
-%configure --with-selinux --with-libcap-ng=yes --with-systemdsystemunitdir=%{_unitdir} --sysconfdir=%{_sysconfdir}/%name/
+%configure --with-selinux --with-libcap-ng=yes --with-libsystemd --with-systemdsystemunitdir=%{_unitdir} --sysconfdir=%{_sysconfdir}/%name/
 %ifarch sparc64
 make CXXFLAGS="$RPM_OPT_FLAGS -fPIE" LDFLAGS="-pie -Wl,-z,relro,-z,now"
 %else
@@ -104,6 +104,9 @@ fi
 %{_sharedstatedir}/%{name}
 
 %changelog
+* Thu Jan 03 2019 Michal Hlavinka <mhlavink@redhat.com> - 1:7.0-1
+- smartmontools updated to 7.0
+
 * Sat Jul 14 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1:6.6-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 
