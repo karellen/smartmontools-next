@@ -3,7 +3,6 @@ Name:		smartmontools
 Version:	7.0
 Release:	3%{?dist}
 Epoch:		1
-Group:		System Environment/Base
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
