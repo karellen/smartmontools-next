@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	7.0
-Release:	4%{?dist}
+Release:	5%{?dist}
 Epoch:		1
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
@@ -53,7 +53,7 @@ sed -i 's|/etc/smartmontools/sysconfig|/etc/sysconfig|g' smartd.service
 rm -f examplescripts/Makefile*
 chmod a-x -R examplescripts/*
 install -D -p -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/smartmontools
-install -D -p -m 755 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/smartd_warning.d/smartdnotify
+install -D -p -m 755 %{SOURCE4} $RPM_BUILD_ROOT/%{_libexecdir}/%{name}/smartdnotify
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/smartd_warning.d
 rm -rf $RPM_BUILD_ROOT/etc/{rc.d,init.d}
 rm -rf $RPM_BUILD_ROOT%{_docdir}/%{name}
@@ -87,7 +87,6 @@ fi
 %dir %{_sysconfdir}/%name/smartd_warning.d
 %config(noreplace) %{_sysconfdir}/%{name}/smartd.conf
 %config(noreplace) %{_sysconfdir}/%{name}/smartd_warning.sh
-%config(noreplace) %{_sysconfdir}/%{name}/smartd_warning.d/smartdnotify
 %config(noreplace) %{_sysconfdir}/sysconfig/smartmontools
 %{_unitdir}/smartd.service
 %{_sbindir}/smartd
@@ -95,10 +94,14 @@ fi
 %{_sbindir}/smartctl
 %{_mandir}/man?/smart*.*
 %{_mandir}/man?/update-smart*.*
+%{_libexecdir}/%{name}
 %{_datadir}/%{name}
 %{_sharedstatedir}/%{name}
 
 %changelog
+* Wed Apr 03 2019 Michal Hlavinka <mhlavink@redhat.com> - 1:7.0-5
+- revert smartd_warning related changes
+
 * Sat Feb 02 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1:7.0-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
