@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	7.0
-Release:	5%{?dist}
+Release:	6%{?dist}
 Epoch:		1
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
@@ -38,14 +38,8 @@ cp %{SOURCE5} .
 
 %build
 autoreconf -i
-%configure --with-selinux --with-libcap-ng=yes --with-libsystemd --with-systemdsystemunitdir=%{_unitdir} --sysconfdir=%{_sysconfdir}/%name/
-%ifarch sparc64
-%make_build CXXFLAGS="$RPM_OPT_FLAGS -fPIE" LDFLAGS="-pie -Wl,-z,relro,-z,now"
-%else
+%configure --with-selinux --with-libcap-ng=yes --with-libsystemd --with-systemdsystemunitdir=%{_unitdir} --sysconfdir=%{_sysconfdir}/%{name}/ --with-systemdenvfile=%{_sysconfdir}/sysconfig/%{name}
 %make_build CXXFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie -Wl,-z,relro,-z,now"
-%endif
-
-sed -i 's|/etc/smartmontools/sysconfig|/etc/sysconfig|g' smartd.service
 
 %install
 %make_install
@@ -61,17 +55,6 @@ mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/%{name}
 
 %preun
 %systemd_preun smartd.service
-
-%pre
-if [ $1 = 2 ] # only during update
-then
-  # for Fedora 19-22
-  if [ -f %{_sysconfdir}/smartd.conf -a ! -e %{_sysconfdir}/%name ]
-  then
-    mkdir -p %{_sysconfdir}/%{name}
-    cp -p %{_sysconfdir}/smartd.conf %{_sysconfdir}/%{name}
-  fi
-fi
 
 %post
 %systemd_post smartd.service
@@ -99,6 +82,11 @@ fi
 %{_sharedstatedir}/%{name}
 
 %changelog
+* Fri Apr 12 2019 Daniel Axelrod <daxelrod@datto.com> - 1:7.0-6
+- Remove unused patches
+- Drop pre script for migrating from unsupported Fedora versions
+- Replace sed with configure switch
+
 * Wed Apr 03 2019 Michal Hlavinka <mhlavink@redhat.com> - 1:7.0-5
 - revert smartd_warning related changes
 
