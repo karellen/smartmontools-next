@@ -1,6 +1,6 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
-Version:	7.0
+Version:	7.1
 Release:	7%{?dist}
 Epoch:		1
 License:	GPLv2+
@@ -82,6 +82,9 @@ mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/%{name}
 %{_sharedstatedir}/%{name}
 
 %changelog
+* Mon Jan 06 2020 Michal Hlavinka <mhlavink@redhat.com> - 1:7.1-7
+- smartmontools updated to 7.1
+
 * Fri Jul 26 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1:7.0-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
