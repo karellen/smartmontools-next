@@ -15,6 +15,7 @@ Source5:	drivedb.h
 #fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
 
+BuildRequires: make
 BuildRequires:	gcc-c++ readline-devel ncurses-devel automake util-linux groff gettext
 BuildRequires:	libselinux-devel libcap-ng-devel
 BuildRequires:	systemd systemd-devel
