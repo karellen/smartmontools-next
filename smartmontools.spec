@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	7.2
-Release:	%{?dist}
+Release:	1%{?dist}
 Epoch:		1
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
@@ -83,7 +83,7 @@ mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/%{name}
 %{_sharedstatedir}/%{name}
 
 %changelog
-* Mon Jan 18 2021 Michal Hlavinka <mhlavink@redhat.com> - 1:
+* Mon Jan 18 2021 Michal Hlavinka <mhlavink@redhat.com> - 1:7.2-1
 - smartmontools updated to 7.2
 
 * Mon Jan 18 2021 Michal Hlavinka <mhlavink@redhat.com> - 1:7.1-10
