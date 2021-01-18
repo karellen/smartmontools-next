@@ -15,6 +15,7 @@ Source5:	drivedb.h
 #fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
 
+BuildRequires: make
 BuildRequires:	gcc-c++ readline-devel ncurses-devel automake util-linux groff gettext
 BuildRequires:	libselinux-devel libcap-ng-devel
 BuildRequires:	systemd systemd-devel
@@ -82,8 +83,11 @@ mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/%{name}
 %{_sharedstatedir}/%{name}
 
 %changelog
-* Mon Jan 18 2021 Michal Hlavinka <mhlavink@redhat.com> - 1:7.1-9
+* Mon Jan 18 2021 Michal Hlavinka <mhlavink@redhat.com> - 1:7.1-10
 - use capabilites by default
+
+* Wed Jul 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1:7.1-9
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
 * Thu Jan 30 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1:7.1-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
