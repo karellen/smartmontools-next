@@ -1,7 +1,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	7.2
-Release:	1%{?dist}
+Release:	2%{?dist}
 Epoch:		1
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
@@ -32,14 +32,17 @@ failure.
 %prep
 %setup -q 
 %patch1 -p1 -b .defaultconf
-
-# update SOURCE5 on maintainer's machine prior commiting, there's no internet connection on builders
-curl %{UrlSource5} -o %{SOURCE5} ||:
 cp %{SOURCE5} .
 
 %build
 autoreconf -i
 %configure --with-selinux --with-libcap-ng=yes --with-libsystemd --with-systemdsystemunitdir=%{_unitdir} --sysconfdir=%{_sysconfdir}/%{name}/ --with-systemdenvfile=%{_sysconfdir}/sysconfig/%{name}
+
+# update SOURCE5 on maintainer's machine prior commiting, there's no internet connection on builders
+%make_build update-smart-drivedb
+./update-smart-drivedb -s - -u sf drivedb.h ||:
+cp drivedb.h ../drivedb.h ||:
+
 %make_build CXXFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie -Wl,-z,relro,-z,now"
 
 %install
@@ -83,6 +86,9 @@ mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/%{name}
 %{_sharedstatedir}/%{name}
 
 %changelog
+* Mon Jan 25 2021 Michal Hlavinka <mhlavink@redhat.com> - 1:7.2-2
+- make sure correct version of drivedb.h is used (#1918946)
+
 * Mon Jan 18 2021 Michal Hlavinka <mhlavink@redhat.com> - 1:7.2-1
 - smartmontools updated to 7.2
 

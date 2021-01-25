@@ -68,7 +68,7 @@
 /*
 const drive_settings builtin_knowndrives[] = {
  */
-  { "VERSION: 7.3 $Id: drivedb.h 5170 2021-01-17 16:11:20Z chrfranke $",
+  { "VERSION: 7.2/5170 2021-01-17 16:11:20 $Id: drivedb.h 5171 2021-01-17 17:17:19Z chrfranke $",
     "-", "-",
     "Version information",
     ""
@@ -5892,7 +5892,7 @@ const drive_settings builtin_knowndrives[] = {
     "0x174c:0x2362",
     "",
     "",
-    "-d sntasmedia"
+    "" // smartmontools >= r5168: -d sntasmedia
   },
   { "USB: ; ASMedia",
     "0x174c:0x....",
