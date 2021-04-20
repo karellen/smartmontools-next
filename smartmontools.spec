@@ -1,7 +1,13 @@
+# defining macros needed by SELinux
+%global with_selinux 1
+%global selinuxtype targeted
+%global moduletype contrib
+%global modulename smartmon
+
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	7.2
-Release:	4%{?dist}
+Release:	5%{?dist}
 Epoch:		1
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
@@ -11,6 +17,9 @@ Source4:	smartdnotify
 #semi-automatic update of drivedb.h
 %global		UrlSource5	https://sourceforge.net/p/smartmontools/code/HEAD/tree/trunk/smartmontools/drivedb.h?format=raw
 Source5:	drivedb.h
+Source6:	selinux_%{modulename}.te
+Source7:	selinux_%{modulename}.if
+Source8:	selinux_%{modulename}.fc
 
 #fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
@@ -19,7 +28,11 @@ BuildRequires: make
 BuildRequires:	gcc-c++ readline-devel ncurses-devel automake util-linux groff gettext
 BuildRequires:	libselinux-devel libcap-ng-devel
 BuildRequires:	systemd systemd-devel
-%{?systemd_requires}
+%if 0%{?with_selinux}
+# This ensures that the *-selinux package and all it’s dependencies are not pulled
+# into containers and other systems that do not use SELinux
+Requires:	(%{name}-selinux if selinux-policy-%{selinuxtype})
+%endif
 
 %description
 The smartmontools package contains two utility programs (smartctl
@@ -29,10 +42,31 @@ into most modern ATA and SCSI hard disks. In many cases, these
 utilities will provide advanced warning of disk degradation and
 failure.
 
+%if 0%{?with_selinux}
+%package selinux
+Summary:	SELinux policies for smartmontools
+BuildArch:	noarch
+Requires:	selinux-policy-%{selinuxtype}
+Requires(post):	selinux-policy-%{selinuxtype}
+BuildRequires:	selinux-policy-devel
+%{?selinux_requires}
+
+%description selinux
+Custom SELinux policy module for smartmontools
+%endif
+
 %prep
 %setup -q 
 %patch1 -p1 -b .defaultconf
 cp %{SOURCE5} .
+%if 0%{?with_selinux}
+mkdir selinux
+for srcf in %{SOURCE6} %{SOURCE7} %{SOURCE8}
+do
+  dstf=${srcf##*/selinux_}
+  cp -p $srcf $dstf
+done
+%endif
 
 %build
 autoreconf -i
@@ -45,6 +79,12 @@ cp drivedb.h ../drivedb.h ||:
 
 %make_build CXXFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie -Wl,-z,relro,-z,now"
 
+%if 0%{?with_selinux}
+make -f %{_datadir}/selinux/devel/Makefile %{modulename}.pp
+bzip2 -9 %{modulename}.pp
+%endif
+
+
 %install
 %make_install
 
@@ -56,6 +96,34 @@ mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/smartd_warning.d
 rm -rf $RPM_BUILD_ROOT/etc/{rc.d,init.d}
 rm -rf $RPM_BUILD_ROOT%{_docdir}/%{name}
 mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/%{name}
+
+%if 0%{?with_selinux}
+install -D -m 0644 %{modulename}.pp.bz2 %{buildroot}%{_datadir}/selinux/packages/%{selinuxtype}/%{modulename}.pp.bz2
+%endif
+
+%if 0%{?with_selinux}
+# SELinux contexts are saved so that only affected files can be
+# relabeled after the policy module installation
+%pre selinux
+%selinux_relabel_pre -s %{selinuxtype}
+
+%post selinux
+%selinux_modules_install -s %{selinuxtype} %{_datadir}/selinux/packages/%{selinuxtype}/%{modulename}.pp.bz2
+%selinux_relabel_post -s %{selinuxtype}
+
+if [ "$1" -le "1" ]; then # First install
+   # the daemon needs to be restarted for the custom label to be applied
+   %systemd_postun_with_restart smartd.service
+fi
+
+%postun selinux
+if [ $1 -eq 0 ]; then
+    %selinux_modules_uninstall -s %{selinuxtype} %{modulename}
+    %selinux_relabel_post -s %{selinuxtype}
+    # the daemon needs to be restarted for the custom label to be removed
+    %systemd_postun_with_restart smartd.service
+fi
+%endif
 
 %preun
 %systemd_preun smartd.service
@@ -85,7 +153,14 @@ mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/%{name}
 %{_datadir}/%{name}
 %{_sharedstatedir}/%{name}
 
+%files selinux
+%{_datadir}/selinux/packages/%{selinuxtype}/%{modulename}.pp.*
+%ghost %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
+
 %changelog
+* Mon Apr 19 2021 Michal Hlavinka <mhlavink@redhat.com> - 1:7.2-5
+- add selinux sub-package
+
 * Tue Mar 02 2021 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 1:7.2-4
 - Rebuilt for updated systemd-rpm-macros
   See https://pagure.io/fesco/issue/2583.
