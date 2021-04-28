@@ -7,7 +7,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	7.2
-Release:	5%{?dist}
+Release:	6%{?dist}
 Epoch:		1
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
@@ -17,9 +17,9 @@ Source4:	smartdnotify
 #semi-automatic update of drivedb.h
 %global		UrlSource5	https://sourceforge.net/p/smartmontools/code/HEAD/tree/trunk/smartmontools/drivedb.h?format=raw
 Source5:	drivedb.h
-Source6:	selinux_%{modulename}.te
-Source7:	selinux_%{modulename}.if
-Source8:	selinux_%{modulename}.fc
+Source6:	%{modulename}.te
+Source7:	%{modulename}.if
+Source8:	%{modulename}.fc
 
 #fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
@@ -61,11 +61,7 @@ Custom SELinux policy module for smartmontools
 cp %{SOURCE5} .
 %if 0%{?with_selinux}
 mkdir selinux
-for srcf in %{SOURCE6} %{SOURCE7} %{SOURCE8}
-do
-  dstf=${srcf##*/selinux_}
-  cp -p $srcf $dstf
-done
+cp -p  %{SOURCE6} %{SOURCE7} %{SOURCE8} selinux/
 %endif
 
 %build
@@ -158,6 +154,9 @@ fi
 %ghost %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
 
 %changelog
+* Wed Apr 28 2021 Michal Hlavinka <mhlavink@redhat.com> - 1:7.2-6
+- simplify selinux policy path for ci tests
+
 * Mon Apr 19 2021 Michal Hlavinka <mhlavink@redhat.com> - 1:7.2-5
 - add selinux sub-package
 
