@@ -7,7 +7,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	7.2
-Release:	6%{?dist}
+Release:	7%{?dist}
 Epoch:		1
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
@@ -23,6 +23,7 @@ Source8:	%{modulename}.fc
 
 #fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
+Patch2: smartmontools-7.2-capnotify.patch
 
 BuildRequires: make
 BuildRequires:	gcc-c++ readline-devel ncurses-devel automake util-linux groff gettext
@@ -58,6 +59,7 @@ Custom SELinux policy module for smartmontools
 %prep
 %setup -q 
 %patch1 -p1 -b .defaultconf
+%patch2 -p1 -b .capnotify
 cp %{SOURCE5} .
 %if 0%{?with_selinux}
 mkdir selinux
@@ -154,6 +156,9 @@ fi
 %ghost %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
 
 %changelog
+* Wed Jun 16 2021 Michal Hlavinka <mhlavink@redhat.com> - 1:7.2-7
+- make notification work with capabilities (#1954015)
+
 * Wed Apr 28 2021 Michal Hlavinka <mhlavink@redhat.com> - 1:7.2-6
 - simplify selinux policy path for ci tests
 
