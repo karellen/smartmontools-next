@@ -7,7 +7,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	7.2
-Release:	8%{?dist}
+Release:	9%{?dist}
 Epoch:		1
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
@@ -20,10 +20,11 @@ Source5:	drivedb.h
 Source6:	%{modulename}.te
 Source7:	%{modulename}.if
 Source8:	%{modulename}.fc
+Source9:	%{modulename}.te.f33
 
 #fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
-Patch2: smartmontools-7.2-capnotify.patch
+Patch2:		smartmontools-7.2-capnotify.patch
 
 BuildRequires: make
 BuildRequires:	gcc-c++ readline-devel ncurses-devel automake util-linux groff gettext
@@ -63,7 +64,13 @@ Custom SELinux policy module for smartmontools
 cp %{SOURCE5} .
 %if 0%{?with_selinux}
 mkdir selinux
-cp -p  %{SOURCE6} %{SOURCE7} %{SOURCE8} selinux/
+cp -p  %{SOURCE7} %{SOURCE8} selinux/
+%if %{?fedora}0 > 330
+cp -p %{SOURCE6} selinux/
+%else
+cp -p %{SOURCE9} selinux/smartmon.te
+%endif
+
 %endif
 
 %build
@@ -156,6 +163,9 @@ fi
 %ghost %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
 
 %changelog
+* Mon Aug 16 2021 Michal Hlavinka <mhlavink@redhat.com> - 1:7.2-9
+- selinux should allow access to nvme devices (#1990463)
+
 * Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1:7.2-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
