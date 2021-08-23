@@ -7,7 +7,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	7.2
-Release:	9%{?dist}
+Release:	10%{?dist}
 Epoch:		1
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
@@ -163,6 +163,9 @@ fi
 %ghost %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
 
 %changelog
+* Mon Aug 23 2021 Michal Hlavinka <mhlavink@redhat.com> - 1:7.2-10
+- more selinux fixes
+
 * Mon Aug 16 2021 Michal Hlavinka <mhlavink@redhat.com> - 1:7.2-9
 - selinux should allow access to nvme devices (#1990463)
 
