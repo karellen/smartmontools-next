@@ -7,7 +7,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	7.2
-Release:	10%{?dist}
+Release:	11%{?dist}
 Epoch:		1
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
@@ -25,6 +25,7 @@ Source9:	%{modulename}.te.f33
 #fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
 Patch2:		smartmontools-7.2-capnotify.patch
+Patch3:	smartmontools-7.2-permsfix.patch
 
 BuildRequires: make
 BuildRequires:	gcc-c++ readline-devel ncurses-devel automake util-linux groff gettext
@@ -61,6 +62,7 @@ Custom SELinux policy module for smartmontools
 %setup -q 
 %patch1 -p1 -b .defaultconf
 %patch2 -p1 -b .capnotify
+%patch3 -p1 -b .permsfix
 cp %{SOURCE5} .
 %if 0%{?with_selinux}
 mkdir selinux
@@ -163,6 +165,9 @@ fi
 %ghost %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
 
 %changelog
+* Tue Nov 02 2021 Michal Hlavinka <mhlavink@redhat.com> - 1:7.2-11
+- fix /dev/megaraid_sas_ioctl_node mknode permissions (#1936824)
+
 * Mon Aug 23 2021 Michal Hlavinka <mhlavink@redhat.com> - 1:7.2-10
 - more selinux fixes
 
