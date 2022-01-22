@@ -7,7 +7,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	7.2
-Release:	11%{?dist}
+Release:	12%{?dist}
 Epoch:		1
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
@@ -165,6 +165,9 @@ fi
 %ghost %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
 
 %changelog
+* Sat Jan 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1:7.2-12
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
 * Tue Nov 02 2021 Michal Hlavinka <mhlavink@redhat.com> - 1:7.2-11
 - fix /dev/megaraid_sas_ioctl_node mknode permissions (#1936824)
 
