@@ -6,8 +6,8 @@
 
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
-Version:	7.2
-Release:	12%{?dist}
+Version:	7.3
+Release:	1%{?dist}
 Epoch:		1
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
@@ -24,8 +24,6 @@ Source9:	%{modulename}.te.f33
 
 #fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
-Patch2:		smartmontools-7.2-capnotify.patch
-Patch3:	smartmontools-7.2-permsfix.patch
 
 BuildRequires: make
 BuildRequires:	gcc-c++ readline-devel ncurses-devel automake util-linux groff gettext
@@ -61,8 +59,6 @@ Custom SELinux policy module for smartmontools
 %prep
 %setup -q 
 %patch1 -p1 -b .defaultconf
-%patch2 -p1 -b .capnotify
-%patch3 -p1 -b .permsfix
 cp %{SOURCE5} .
 %if 0%{?with_selinux}
 mkdir selinux
@@ -165,6 +161,9 @@ fi
 %ghost %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
 
 %changelog
+* Tue Mar 01 2022 Michal Hlavinka <mhlavink@redhat.com> - 1:7.3-1
+- updated to 7.3
+
 * Sat Jan 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1:7.2-12
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
