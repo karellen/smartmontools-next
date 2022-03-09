@@ -7,7 +7,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	7.3
-Release:	1%{?dist}
+Release:	2%{?dist}
 Epoch:		1
 License:	GPLv2+
 URL:		http://smartmontools.sourceforge.net/
@@ -161,6 +161,9 @@ fi
 %ghost %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
 
 %changelog
+* Wed Mar 09 2022 Michal Hlavinka <mhlavink@redhat.com> - 1:7.3-2
+- use --capabilities=mail for exim mail notification (#2060526)
+
 * Tue Mar 01 2022 Michal Hlavinka <mhlavink@redhat.com> - 1:7.3-1
 - updated to 7.3
 
