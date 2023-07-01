@@ -173,6 +173,9 @@ fi
 %ghost %attr(0700,-,-) %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
 
 %changelog
+* Sat Jul 01 2023 Arcadiy Ivanov <arcadiy@ivanov.biz> 7.4.138-1
+- new package built with tito
+
 * Wed Apr 05 2023 Michal Hlavinka <mhlavink@redhat.com> - 1:7.3-6
 - update license tag format (SPDX migration) for https://fedoraproject.org/wiki/Changes/SPDX_Licenses_Phase_1
 
