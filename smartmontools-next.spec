@@ -7,8 +7,8 @@
 
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		%{packagename}-next
-Version:	7.4.139
-Release:	2
+Version:	7.4.155
+Release:	1
 Epoch:		1
 License:	GPL-2.0-or-later
 URL:		http://smartmontools.sourceforge.net/
@@ -173,6 +173,9 @@ fi
 %ghost %attr(0700,-,-) %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
 
 %changelog
+* Mon Jul 17 2023 Arcadiy Ivanov <arcadiy@ivanov.biz> 7.4.155-1
+- Update 2023-07-17 (arcadiy@ivanov.biz)
+
 * Sat Jul 01 2023 Arcadiy Ivanov <arcadiy@ivanov.biz> 7.4.139-2
 - SubmoduleAwareBuilder has been fixed in tito 0.6.23 (arcadiy@ivanov.biz)
 
