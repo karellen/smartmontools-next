@@ -7,3 +7,5 @@
 /var/lib/smartmontools(/.*)?	gen_context(system_u:object_r:fsdaemon_var_lib_t,s0)
 
 /etc/smartmontools/smartd_warning.(sh|d/.*)	gen_context(system_u:object_r:smartdwarn_script_t,s0)
+/usr/libexec/smartmontools/smartdnotify    --   gen_context(system_u:object_r:smartdwarn_script_t,s0)
+
