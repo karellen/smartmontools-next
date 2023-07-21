@@ -15,7 +15,7 @@ gen_tunable(smartmon_3ware, false)
 
 require {
         class capability dac_override;
-        type tty_device_t, user_devpts_t;
+        type tty_device_t, user_devpts_t, system_mail_t;
 }
 
 type fsdaemon_t;
@@ -182,6 +182,9 @@ tunable_policy(`smartmon_3ware',`
 # 	mta_send_mail(fsdaemon_t)
 #     mta_manage_home_rw(fsdaemon_t)
 # ')
+# still creator of the pipe (stdout, stderr) for smartd_warning and mail
+allow system_mail_t fsdaemon_t:fifo_file { getattr read write append ioctl lock };
+
 
 optional_policy(`
 	udev_read_db(fsdaemon_t)
