@@ -24,6 +24,7 @@ Source9:	%{modulename}.te.f33
 Patch1:		smartmontools-5.38-defaultconf.patch
 
 Conflicts: %{packagename}
+Provides: %{packagename}
 BuildRequires: make
 BuildRequires:	gcc-c++ readline-devel ncurses-devel automake util-linux groff gettext
 BuildRequires:	libselinux-devel libcap-ng-devel
