@@ -8,7 +8,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		%{packagename}-next
 Version:	7.4.155
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL-2.0-or-later
 URL:		http://smartmontools.sourceforge.net/
@@ -174,6 +174,12 @@ fi
 %ghost %attr(0700,-,-) %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
 
 %changelog
+* Fri Jul 21 2023 Arcadiy Ivanov <arcadiy@ivanov.biz> 7.4.155-2
+- Add Provides for packages dependent on smartmontools (arcadiy@ivanov.biz)
+
+* Fri Jul 21 2023 Arcadiy Ivanov <arcadiy@ivanov.biz>
+- Add Provides for packages dependent on smartmontools (arcadiy@ivanov.biz)
+
 * Mon Jul 17 2023 Arcadiy Ivanov <arcadiy@ivanov.biz> 7.4.155-1
 - Update 2023-07-17 (arcadiy@ivanov.biz)
 
