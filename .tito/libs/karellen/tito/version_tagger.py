@@ -35,9 +35,7 @@ from subprocess import check_output
 GIT_LOG_RE = re.compile(r"([0-9a-f]+)(?:\s+\(tag: (.+)\))?\n")
 VERSION_RE = re.compile(r"v(\d+).(\d+).(\d+)")
 
-RELEASE_RE = re.compile(r"^\s+Release\s+(\d+)\.(\d+)\s+RELEASE_\1_\2\s*$", re.MULTILINE)
-NEXT_VERSION_RE = re.compile(r"^\++Summary:\s+smartmontools\s+release\s+(\d+\.\d+(?:\.\d+)?(?:\.\d+)?)\s*$",
-                             re.MULTILINE)
+RELEASE_RE = re.compile(r"^\+AC_INIT\(\[smartmontools\],\[([\d\.]+)\],.*\)\s*$", re.MULTILINE)
 
 
 class SmartmontoolsVersionTagger(VersionTagger):
@@ -46,33 +44,25 @@ class SmartmontoolsVersionTagger(VersionTagger):
         start_commit = "HEAD"
 
         last_release_rev = None
-        for rev in check_output(["git", "rev-list", start_commit, "--", "NEWS"],
+        for rev in check_output(["git", "rev-list", start_commit, "--", "configure.ac"],
                                 text=True, cwd="smartmontools/smartmontools").split("\n"):
-            news_changes = check_output(["git", "show", rev, "NEWS"],
+            if rev:
+                news_changes = check_output(["git", "show", rev, "configure.ac"],
                                         text=True, cwd="smartmontools/smartmontools")
-            m = RELEASE_RE.findall(news_changes)
-            if m:
-                last_release_rev = rev
-                break
+                m = RELEASE_RE.findall(news_changes)
+                if m:
+                    last_release_rev = rev
+                    new_version = m[0]
+                    break
 
         if not last_release_rev:
-            error_out("Could not find revision of the last smartmontools release in the NEWS file!")
+            error_out("Could not find revision of the last smartmontools release in the configure.ac file!")
 
         commits = 0
-        new_version = None
         for rev in check_output(["git", "rev-list", f"{last_release_rev}..HEAD"],
                                 text=True, cwd="smartmontools/smartmontools").split("\n"):
             if rev:
-                news_changes = check_output(["git", "show", rev, "NEWS"],
-                                            text=True, cwd="smartmontools/smartmontools")
                 commits += 1
-                if not new_version:
-                    new_version = NEXT_VERSION_RE.findall(news_changes)
-                    if new_version:
-                        new_version = new_version[0]
-
-        if not new_version:
-            error_out("Could not find next smartmontools release version in the NEWS file!")
 
         return f"{new_version}.{commits}"
 
