@@ -11,7 +11,7 @@ Version:	7.4.177
 Release:	1
 Epoch:		1
 License:	GPL-2.0-or-later
-URL:		http://smartmontools.sourceforge.net/
+URL:		https://github.com/karellen/smartmontools-next
 Source0:	%{name}-%{version}.tar.gz
 Source2:	smartmontools.sysconf
 Source4:	smartdnotify
@@ -19,6 +19,9 @@ Source6:	%{modulename}.te
 Source7:	%{modulename}.if
 Source8:	%{modulename}.fc
 Source9:	%{modulename}.te.f33
+
+Vendor: Karellen, Inc.
+Packager: Karellen, Inc. <supervisor@karellen.co>
 
 #fedora/rhel specific
 Patch1:		smartmontools-5.38-defaultconf.patch
