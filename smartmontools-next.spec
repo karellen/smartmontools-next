@@ -7,7 +7,7 @@
 
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		%{packagename}-next
-Version:	7.5.5
+Version:	7.5.16
 Release:	1
 Epoch:		1
 License:	GPL-2.0-or-later
@@ -177,6 +177,9 @@ fi
 %ghost %attr(0700,-,-) %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
 
 %changelog
+* Tue Sep 12 2023 Arcadiy Ivanov <arcadiy@ivanov.biz> 7.5.16-1
+- Update 2023-09-12 (arcadiy@ivanov.biz)
+
 * Thu Aug 24 2023 Arcadiy Ivanov <arcadiy@ivanov.biz> 7.5.5-1
 - Use AC_INIT in configure.ac to detect the version (arcadiy@ivanov.biz)
 - Update 20230824 Add Vendor information (arcadiy@ivanov.biz)
