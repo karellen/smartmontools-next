@@ -42,7 +42,7 @@ corecmd_exec_shell(smartdwarn_t)
 # reads list of users
 auth_read_passwd_file(smartdwarn_t)
 
-hostname_exec(smartdwarn_t)
+hostname_domtrans(smartdwarn_t)
 
 # smartd_warning.sh to run smartd_warning.d/* scripts
 allow smartdwarn_t smartdwarn_script_t:file execute_no_trans;
