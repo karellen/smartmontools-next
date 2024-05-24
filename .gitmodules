@@ -1,3 +1,4 @@
 [submodule "smartmontools"]
 	path = smartmontools
 	url = https://github.com/smartmontools/smartmontools
+	branch = master
