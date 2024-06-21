@@ -34,6 +34,12 @@ BuildRequires:	systemd systemd-devel
 Requires:	(%{name}-selinux if selinux-policy-%{selinuxtype})
 %endif
 
+%if "%{_sbindir}" == "%{_bindir}"
+# We rely on filesystem to create the compat symlinks for us
+Requires: filesystem(unmerged-sbin-symlinks)
+Provides: /usr/sbin/smartctl
+%endif
+
 %if 0%{?fedora} > 39
 # as per https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
