@@ -7,7 +7,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		smartmontools
 Version:	7.4
-Release:	4%{?dist}
+Release:	5%{?dist}
 Epoch:		1
 License:	GPL-2.0-or-later
 URL:		http://smartmontools.sourceforge.net/
@@ -169,6 +169,9 @@ fi
 
 
 %changelog
+* Tue Jul 09 2024 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 1:7.4-5
+- Rebuilt for the bin-sbin merge
+
 * Tue Mar 26 2024 Michal Hlavinka <mhlavink@redhat.com> - 1:7.4-4
 - drop i686 build as per https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 
