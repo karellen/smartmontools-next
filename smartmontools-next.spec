@@ -7,7 +7,7 @@
 
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		%{packagename}-next
-Version:	7.5.75
+Version:	7.5.77
 Release:	1
 Epoch:		1
 License:	GPL-2.0-or-later
@@ -177,6 +177,13 @@ fi
 %ghost %attr(0700,-,-) %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
 
 %changelog
+* Mon Sep 23 2024 Karellen Supervisor <supervisor@karellen.co> 7.5.77-1
+- Update 2024-09-23T18:02:19Z (supervisor@karellen.co)
+- Fix regex (arcadiy@ivanov.biz)
+- Update actions based on karellen-sysbox (arcadiy@ivanov.biz)
+- Add branch following (arcadiy@ivanov.biz)
+- Add auto-updater (arcadiy@ivanov.biz)
+
 * Sat May 11 2024 Arcadiy Ivanov <arcadiy@ivanov.biz> 7.5.75-1
 - Update 2024-05-11 (arcadiy@ivanov.biz)
 
