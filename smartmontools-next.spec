@@ -67,6 +67,7 @@ Custom SELinux policy module for smartmontools
 %setup -q 
 pushd smartmontools
 %patch -P1 -p1 -b .defaultconf
+version_sh=$(src/getversion.sh -s) && eval "${version_sh}"
 %if 0%{?with_selinux}
 mkdir selinux
 cp -p  %{SOURCE7} %{SOURCE8} selinux/
