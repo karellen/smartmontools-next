@@ -54,7 +54,7 @@ jobs:
           git config --global user.name "Karellen Supervisor"
 
 
-          smartmontools/src/getversion.sh -s > dist_version.sh
+          smartmontools/src/getversion.sh -s > dist-version.sh
           git add dist-version.sh
           git commit -a -m "Update $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
