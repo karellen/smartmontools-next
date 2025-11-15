@@ -1,6 +1,6 @@
-diff -up src/smartd.conf.defaultconf src/smartd.conf
---- src/smartd.conf.defaultconf	2008-08-07 12:21:53.000000000 +0200
-+++ src/smartd.conf	2008-08-07 12:24:26.000000000 +0200
+diff -up a/src/smartd.conf.defaultconf b/src/smartd.conf
+--- a/src/smartd.conf.defaultconf	2008-08-07 12:21:53.000000000 +0200
++++ b/src/smartd.conf	2008-08-07 12:24:26.000000000 +0200
 @@ -20,7 +20,7 @@
  # Directives listed below, which will be applied to all devices that
  # are found.  Most users should comment out DEVICESCAN and explicitly
