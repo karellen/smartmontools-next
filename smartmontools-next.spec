@@ -19,6 +19,7 @@ Source6:	%{modulename}.te
 Source7:	%{modulename}.if
 Source8:	%{modulename}.fc
 Source9:	%{modulename}.te.f33
+Source10:   dist-version.sh
 
 Vendor: Karellen, Inc.
 Packager: Karellen, Inc. <supervisor@karellen.co>
