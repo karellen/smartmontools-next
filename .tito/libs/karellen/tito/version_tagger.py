@@ -47,8 +47,6 @@ class SmartmontoolsVersionTagger(VersionTagger):
         for rev in check_output(["git", "rev-list", start_commit, "--", "configure.ac"],
                                 text=True, cwd="smartmontools").split("\n"):
             if rev:
-                news_changes = check_output(["git", "show", rev, "configure.ac"],
-                                        text=True, cwd="smartmontools")
                 m = RELEASE_RE.findall(news_changes)
                 if m:
                     last_release_rev = rev
@@ -125,4 +123,7 @@ class SmartmontoolsVersionTagger(VersionTagger):
             error_out(msg)
         info_out("Tagging new version of %s: %s -> %s" % (self.project_name,
                                                           old_version, new_version))
+
+        news_changes = check_output(["bash", "-c", "src/getversion.sh -s > src/dist-version.sh"], text=True, cwd="smartmontools")
+
         return new_version
