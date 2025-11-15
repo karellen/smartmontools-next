@@ -8,7 +8,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		%{packagename}-next
 Version:	8.0.237
-Release:	15
+Release:	16
 Epoch:		1
 License:	GPL-2.0-or-later
 URL:		https://github.com/karellen/smartmontools-next
@@ -179,6 +179,13 @@ fi
 %ghost %attr(0700,-,-) %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
 
 %changelog
+* Sat Nov 15 2025 Arcadiy Ivanov <arcadiy@ivanov.biz> 8.0.237-16
+- Update latest dist-version.sh (arcadiy@ivanov.biz)
+- Fix dist-version.sh name (arcadiy@ivanov.biz)
+- Rollback previous smartmontools version (arcadiy@ivanov.biz)
+- Generate, package and carry dist-version.sh (arcadiy@ivanov.biz)
+- Remove dist_version.sh generator from Tito (arcadiy@ivanov.biz)
+
 * Sat Nov 15 2025 Arcadiy Ivanov <arcadiy@ivanov.biz> 8.0.237-15
 - Add dist-version.sh (arcadiy@ivanov.biz)
 
