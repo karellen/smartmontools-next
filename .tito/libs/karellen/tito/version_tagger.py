@@ -126,6 +126,6 @@ class SmartmontoolsVersionTagger(VersionTagger):
         info_out("Tagging new version of %s: %s -> %s" % (self.project_name,
                                                           old_version, new_version))
 
-        check_call(["bash", "-c", "src/getversion.sh -s > src/dist-version.sh"], text=True, cwd="smartmontools")
+        check_call(["bash", "-c", "src/getversion.sh -s > src/dist-version.sh.tmp && mv src/dist-version.sh.tmp src/dist-version.sh"], text=True, cwd="smartmontools")
 
         return new_version
