@@ -29,7 +29,7 @@ Patch1:		smartmontools-5.38-defaultconf.patch
 Conflicts: %{packagename}
 Provides: %{packagename}
 BuildRequires: make
-BuildRequires:	gcc-c++ readline-devel ncurses-devel automake util-linux groff gettext libtool
+BuildRequires:	gcc-c++ readline-devel ncurses-devel automake util-linux groff gettext libtool tree
 BuildRequires:	libselinux-devel libcap-ng-devel
 BuildRequires:	systemd systemd-devel
 %if 0%{?with_selinux}
@@ -84,12 +84,11 @@ pushd smartmontools
 autoreconf -i
 %configure --with-selinux --with-libcap-ng=yes --with-libsystemd --with-systemdsystemunitdir=%{_unitdir} --sysconfdir=%{_sysconfdir}/%{packagename}/ --with-systemdenvfile=%{_sysconfdir}/sysconfig/%{packagename}
 
-# update SOURCE5 on maintainer's machine prior commiting, there's no internet connection on builders
-%make_build update-smart-drivedb
-./update-smart-drivedb -s - -u sf drivedb.h ||:
-cp drivedb.h ../../drivedb.h ||:
-
 %make_build CXXFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie -Wl,-z,relro,-z,now"
+tree .
+./update-smart-drivedb -s - -u github src/drivedb.h ||:
+%make_build CXXFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie -Wl,-z,relro,-z,now"
+
 
 %if 0%{?with_selinux}
 make -f %{_datadir}/selinux/devel/Makefile %{modulename}.pp
