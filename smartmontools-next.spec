@@ -88,9 +88,6 @@ autoreconf -i
 %configure --with-selinux --with-libcap-ng=yes --with-libsystemd --with-systemdsystemunitdir=%{_unitdir} --sysconfdir=%{_sysconfdir}/%{packagename}/ --with-systemdenvfile=%{_sysconfdir}/sysconfig/%{packagename}
 
 %make_build CXXFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie -Wl,-z,relro,-z,now"
-src/update-smart-drivedb -s - -u github src/drivedb.h
-%make_build CXXFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie -Wl,-z,relro,-z,now"
-
 
 %if 0%{?with_selinux}
 make -f %{_datadir}/selinux/devel/Makefile %{modulename}.pp
@@ -172,7 +169,7 @@ fi
 %{_datadir}/%{packagename}
 %{_sharedstatedir}/%{packagename}
 %{_includedir}/%{modulename}
-%{_libdir}/*
+%{_libdir}/lib%{modulename}*
 
 %files selinux
 %{_datadir}/selinux/packages/%{selinuxtype}/%{modulename}.pp.*
