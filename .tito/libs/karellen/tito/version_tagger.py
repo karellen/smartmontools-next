@@ -30,7 +30,7 @@ from tito.common import (error_out,
                          increase_zstream,
                          info_out)
 from tito.tagger.main import VersionTagger
-from subprocess import check_output
+from subprocess import check_output, check_call
 
 GIT_LOG_RE = re.compile(r"([0-9a-f]+)(?:\s+\(tag: (.+)\))?\n")
 VERSION_RE = re.compile(r"v(\d+).(\d+).(\d+)")
@@ -47,6 +47,8 @@ class SmartmontoolsVersionTagger(VersionTagger):
         for rev in check_output(["git", "rev-list", start_commit, "--", "configure.ac"],
                                 text=True, cwd="smartmontools").split("\n"):
             if rev:
+                news_changes = check_output(["git", "show", rev, "configure.ac"],
+                                        text=True, cwd="smartmontools")
                 m = RELEASE_RE.findall(news_changes)
                 if m:
                     last_release_rev = rev
@@ -124,6 +126,6 @@ class SmartmontoolsVersionTagger(VersionTagger):
         info_out("Tagging new version of %s: %s -> %s" % (self.project_name,
                                                           old_version, new_version))
 
-        news_changes = check_output(["bash", "-c", "src/getversion.sh -s > src/dist-version.sh"], text=True, cwd="smartmontools")
+        check_call(["bash", "-c", "src/getversion.sh -s > src/dist-version.sh"], text=True, cwd="smartmontools")
 
         return new_version
