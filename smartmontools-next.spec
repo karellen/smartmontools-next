@@ -171,6 +171,8 @@ fi
 %{_libexecdir}/%{packagename}
 %{_datadir}/%{packagename}
 %{_sharedstatedir}/%{packagename}
+%{_includedir}/%{modulename}
+%{_libdir}/*
 
 %files selinux
 %{_datadir}/selinux/packages/%{selinuxtype}/%{modulename}.pp.*
@@ -228,7 +230,7 @@ fi
 * Fri Nov 14 2025 Arcadiy Ivanov <arcadiy@ivanov.biz> 8.0.236-2
 - Fix smartmontools path (arcadiy@ivanov.biz)
 
-* Sat Nov 15 2025 Karellen Supervisor <supervisor@karellen.co> 8.0.237-1
+* Fri Nov 14 2025 Karellen Supervisor <supervisor@karellen.co> 8.0.237-1
 - Update 2025-11-15T04:07:34Z (supervisor@karellen.co)
 - Adjust the subdirectory (arcadiy@ivanov.biz)
 - Trigger update (arcadiy@ivanov.biz)
