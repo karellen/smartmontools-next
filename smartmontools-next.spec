@@ -30,7 +30,7 @@ Patch1:		smartmontools-5.38-defaultconf.patch
 Conflicts: %{packagename}
 Provides: %{packagename}
 BuildRequires: make
-BuildRequires:	gcc-c++ readline-devel ncurses-devel automake util-linux groff gettext libtool tree
+BuildRequires:	gcc-c++ readline-devel ncurses-devel automake util-linux groff gettext libtool gpg
 BuildRequires:	libselinux-devel libcap-ng-devel
 BuildRequires:	systemd systemd-devel
 %if 0%{?with_selinux}
@@ -88,7 +88,7 @@ autoreconf -i
 %configure --with-selinux --with-libcap-ng=yes --with-libsystemd --with-systemdsystemunitdir=%{_unitdir} --sysconfdir=%{_sysconfdir}/%{packagename}/ --with-systemdenvfile=%{_sysconfdir}/sysconfig/%{packagename}
 
 %make_build CXXFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie -Wl,-z,relro,-z,now"
-src/update-smart-drivedb -s - -u github src/drivedb.h ||:
+src/update-smart-drivedb -s - -u github src/drivedb.h
 %make_build CXXFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie -Wl,-z,relro,-z,now"
 
 
@@ -103,8 +103,7 @@ popd
 pushd smartmontools
 %make_install
 
-rm -f examplescripts/Makefile*
-chmod a-x -R examplescripts/*
+chmod a-x -R doc/examplescripts/*
 install -D -p -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/smartmontools
 install -D -p -m 755 %{SOURCE4} $RPM_BUILD_ROOT/%{_libexecdir}/%{packagename}/smartdnotify
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/%{packagename}/smartd_warning.d
@@ -112,7 +111,7 @@ rm -rf $RPM_BUILD_ROOT/etc/{rc.d,init.d}
 rm -rf $RPM_BUILD_ROOT%{_docdir}/%{packagename}
 mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/%{packagename}
 mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{packagename}
-for f in AUTHORS ChangeLog INSTALL NEWS README TODO examplescripts smartd.conf; do
+for f in doc/AUTHORS doc/CHANGELOG.md README.md doc/examplescripts src/smartd.conf; do
   cp -r $f $RPM_BUILD_ROOT%{_docdir}/%{packagename}
 done
 
