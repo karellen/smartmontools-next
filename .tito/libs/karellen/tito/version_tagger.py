@@ -45,10 +45,10 @@ class SmartmontoolsVersionTagger(VersionTagger):
 
         last_release_rev = None
         for rev in check_output(["git", "rev-list", start_commit, "--", "configure.ac"],
-                                text=True, cwd="smartmontools/smartmontools").split("\n"):
+                                text=True, cwd="smartmontools").split("\n"):
             if rev:
                 news_changes = check_output(["git", "show", rev, "configure.ac"],
-                                        text=True, cwd="smartmontools/smartmontools")
+                                        text=True, cwd="smartmontools")
                 m = RELEASE_RE.findall(news_changes)
                 if m:
                     last_release_rev = rev
@@ -60,7 +60,7 @@ class SmartmontoolsVersionTagger(VersionTagger):
 
         commits = 0
         for rev in check_output(["git", "rev-list", f"{last_release_rev}..HEAD"],
-                                text=True, cwd="smartmontools/smartmontools").split("\n"):
+                                text=True, cwd="smartmontools").split("\n"):
             if rev:
                 commits += 1
 
