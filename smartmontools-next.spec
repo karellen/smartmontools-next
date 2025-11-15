@@ -65,7 +65,7 @@ Custom SELinux policy module for smartmontools
 
 %prep
 %setup -q 
-pushd smartmontools/smartmontools
+pushd smartmontools
 %patch -P1 -p1 -b .defaultconf
 %if 0%{?with_selinux}
 mkdir selinux
@@ -80,7 +80,7 @@ cp -p %{SOURCE9} selinux/smartmon.te
 popd
 
 %build
-pushd smartmontools/smartmontools
+pushd smartmontools
 autoreconf -i
 %configure --with-selinux --with-libcap-ng=yes --with-libsystemd --with-systemdsystemunitdir=%{_unitdir} --sysconfdir=%{_sysconfdir}/%{packagename}/ --with-systemdenvfile=%{_sysconfdir}/sysconfig/%{packagename}
 
