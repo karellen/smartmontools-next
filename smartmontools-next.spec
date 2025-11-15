@@ -99,7 +99,7 @@ bzip2 -9 %{modulename}.pp
 popd
 
 %install
-pushd smartmontools/smartmontools
+pushd smartmontools
 %make_install
 
 rm -f examplescripts/Makefile*
@@ -156,7 +156,7 @@ fi
 %files
 %docdir %{_docdir}/%{packagename}
 %{_docdir}/%{packagename}
-%license smartmontools/smartmontools/COPYING
+%license smartmontools/COPYING
 %dir %{_sysconfdir}/%{packagename}
 %dir %{_sysconfdir}/%{packagename}/smartd_warning.d
 %config(noreplace) %{_sysconfdir}/%{packagename}/smartd.conf
