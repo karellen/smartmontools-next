@@ -8,7 +8,7 @@
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		%{packagename}-next
 Version:	8.0.237
-Release:	12
+Release:	13
 Epoch:		1
 License:	GPL-2.0-or-later
 URL:		https://github.com/karellen/smartmontools-next
@@ -177,6 +177,9 @@ fi
 %ghost %attr(0700,-,-) %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
 
 %changelog
+* Sat Nov 15 2025 Arcadiy Ivanov <arcadiy@ivanov.biz> 8.0.237-13
+- dist-version.sh needs to be local (arcadiy@ivanov.biz)
+
 * Sat Nov 15 2025 Arcadiy Ivanov <arcadiy@ivanov.biz> 8.0.237-12
 - Fix Tito getversion script (arcadiy@ivanov.biz)
 - Fix the tito script (arcadiy@ivanov.biz)
