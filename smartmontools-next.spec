@@ -7,7 +7,7 @@
 
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		%{packagename}-next
-Version:	8.0.429
+Version:	8.0.431
 Release:	1
 Epoch:		1
 License:	GPL-2.0-or-later
@@ -176,6 +176,9 @@ fi
 %ghost %attr(0700,-,-) %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
 
 %changelog
+* Sat Jun 06 2026 Karellen Supervisor <supervisor@karellen.co> 8.0.431-1
+- Update 2026-06-06T18:28:29Z (supervisor@karellen.co)
+
 * Wed May 20 2026 Karellen Supervisor <supervisor@karellen.co> 8.0.429-1
 - Update 2026-05-20T18:49:01Z (supervisor@karellen.co)
 
