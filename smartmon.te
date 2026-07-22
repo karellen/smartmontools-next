@@ -54,6 +54,7 @@ allow smartdwarn_t user_devpts_t:chr_file { open write };
 allow smartdwarn_t self:capability { setgid dac_override };
 allow smartdwarn_t systemd_logind_sessions_t:dir { getattr open read search };
 allow smartdwarn_t systemd_logind_sessions_t:file { getattr open read };
+allow smartdwarn_t sssd_var_lib_t:sock_file write;
 
 files_manage_generic_tmp_files(smartdwarn_t)
 term_open_unallocated_ttys(smartdwarn_t)
@@ -71,6 +72,7 @@ optional_policy(`
     mta_manage_home_rw(smartdwarn_t)
 ')
 allow smartdwarn_t tmpfs_t:filesystem getattr;
+allow smartdwarn_t fs_t:filesystem getattr;
 # for dead.letter when mail is undeliverable
 allow smartdwarn_t mail_home_t:file { getattr lock open write };
 
