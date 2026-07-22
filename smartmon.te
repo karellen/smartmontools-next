@@ -15,7 +15,7 @@ gen_tunable(smartmon_3ware, false)
 
 require {
         class capability dac_override;
-        type tmpfs_t, tty_device_t, user_devpts_t, system_mail_t, systemd_logind_sessions_t, mail_home_t;
+        type tmpfs_t, fs_t, tty_device_t, user_devpts_t, system_mail_t, sssd_var_lib_t, systemd_logind_sessions_t, mail_home_t;
 }
 
 type fsdaemon_t;
