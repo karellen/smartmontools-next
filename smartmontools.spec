@@ -176,6 +176,7 @@ fi
 
 %changelog
 * Sat Aug 15 2026 Michal Hlavinka <mhlavink@redhat.com> - 1:7.5-9
+- use notify-send for notification for users with graphical sessions
 - smartd notify for all SMARTD_FAILTYPEs
 
 * Wed Jul 22 2026 Michal Hlavinka <mhlavink@redhat.com> - 1:7.5-8
