@@ -54,7 +54,24 @@ jobs:
           git config --global user.name "Karellen Supervisor"
 
 
-          smartmontools/src/getversion.sh -s > dist-version.sh
+          # Upstream moved the support scripts from 'src' to 'util' (smartmontools
+          # commit 04c60063). Locate 'getversion.sh' in either place so that this
+          # workflow keeps working across the move.
+          GETVERSION_SH=""
+          for candidate in smartmontools/util/getversion.sh smartmontools/src/getversion.sh; do
+              if [ -f "$candidate" ]; then
+                  GETVERSION_SH="$candidate"
+                  break
+              fi
+          done
+
+          if [ -z "$GETVERSION_SH" ]; then
+              echo "# Unable to locate 'getversion.sh' in the smartmontools submodule" >> $GITHUB_STEP_SUMMARY
+              exit 1
+          fi
+
+          "$GETVERSION_SH" -s > dist-version.sh.tmp
+          mv dist-version.sh.tmp dist-version.sh
           git add dist-version.sh
           git commit -a -m "Update $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 

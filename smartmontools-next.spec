@@ -68,7 +68,13 @@ Custom SELinux policy module for smartmontools
 %setup -q 
 pushd smartmontools
 %patch -P1 -p1 -b .defaultconf
-cp -p %{SOURCE10} src/
+# Upstream moved the support scripts (and the location 'getversion.sh' expects
+# 'dist-version.sh' in) from 'src' to 'util'. Support both layouts.
+if [ -f util/getversion.sh ]; then
+  cp -p %{SOURCE10} util/
+else
+  cp -p %{SOURCE10} src/
+fi
 
 %if 0%{?with_selinux}
 mkdir selinux
