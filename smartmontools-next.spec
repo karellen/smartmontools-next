@@ -18,7 +18,7 @@ Source4:	smartdnotify
 Source6:	%{modulename}.te
 Source7:	%{modulename}.if
 Source8:	%{modulename}.fc
-Source9:	%{modulename}.te.f33
+Source9:	smartmontools.tmpfilesd
 Source10:   dist-version.sh
 
 Vendor: Karellen, Inc.
@@ -30,13 +30,27 @@ Patch1:		smartmontools-5.38-defaultconf.patch
 Conflicts: %{packagename}
 Provides: %{packagename}
 BuildRequires: make
-BuildRequires:	gcc-c++ readline-devel ncurses-devel automake util-linux groff gettext libtool gpg
+BuildRequires:	gcc-c++ readline-devel ncurses-devel automake util-linux gettext libtool gpg
 BuildRequires:	libselinux-devel libcap-ng-devel
 BuildRequires:	systemd systemd-devel
+# For the _tmpfilesdir macro.
+BuildRequires: systemd-rpm-macros
+
 %if 0%{?with_selinux}
 # This ensures that the *-selinux package and all it’s dependencies are not pulled
 # into containers and other systems that do not use SELinux
 Requires:	(%{name}-selinux if selinux-policy-%{selinuxtype})
+%endif
+
+%if "%{_sbindir}" == "%{_bindir}"
+# We rely on filesystem to create the compat symlinks for us
+Requires: filesystem(unmerged-sbin-symlinks)
+Provides: /usr/sbin/smartctl
+%endif
+
+%if 0%{?fedora} > 39
+# as per https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
+ExcludeArch:    %{ix86}
 %endif
 
 %description
@@ -78,13 +92,7 @@ fi
 
 %if 0%{?with_selinux}
 mkdir selinux
-cp -p  %{SOURCE7} %{SOURCE8} selinux/
-%if %{?fedora}0 > 330
-cp -p %{SOURCE6} selinux/
-%else
-cp -p %{SOURCE9} selinux/smartmon.te
-%endif
-
+cp -p %{SOURCE6} %{SOURCE7} %{SOURCE8} selinux/
 %endif
 popd
 
@@ -110,6 +118,7 @@ chmod a-x -R doc/examplescripts/*
 install -D -p -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/smartmontools
 install -D -p -m 755 %{SOURCE4} $RPM_BUILD_ROOT/%{_libexecdir}/%{packagename}/smartdnotify
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/%{packagename}/smartd_warning.d
+install -p -D -m 644 %{SOURCE9} $RPM_BUILD_ROOT%{_tmpfilesdir}/%{packagename}.conf
 rm -rf $RPM_BUILD_ROOT/etc/{rc.d,init.d}
 rm -rf $RPM_BUILD_ROOT%{_docdir}/%{packagename}
 mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/%{packagename}
@@ -120,6 +129,7 @@ done
 
 %if 0%{?with_selinux}
 install -D -m 0644 %{modulename}.pp.bz2 %{buildroot}%{_datadir}/selinux/packages/%{selinuxtype}/%{modulename}.pp.bz2
+install -D -p -m 0644 selinux/%{modulename}.if %{buildroot}%{_datadir}/selinux/devel/include/distributed/%{modulename}.if
 %endif
 popd
 
@@ -169,6 +179,7 @@ fi
 %{_sbindir}/smartd
 %{_sbindir}/update-smart-drivedb
 %{_sbindir}/smartctl
+%{_tmpfilesdir}/%{packagename}.conf
 %{_mandir}/man?/smart*.*
 %{_mandir}/man?/update-smart*.*
 %{_libexecdir}/%{packagename}
@@ -178,8 +189,10 @@ fi
 %{_libdir}/lib%{modulename}*
 
 %files selinux
+%license smartmontools/COPYING
 %{_datadir}/selinux/packages/%{selinuxtype}/%{modulename}.pp.*
-%ghost %attr(0700,-,-) %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
+%{_datadir}/selinux/devel/include/distributed/%{modulename}.if
+%ghost %verify(not md5 size mode mtime) %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
 
 %changelog
 * Tue Oct 13 2026 Karellen Supervisor <supervisor@karellen.co> 8.0.574-1
