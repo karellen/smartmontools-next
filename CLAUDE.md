@@ -32,7 +32,8 @@ tests/tests-DSP.yaml          # Fedora CI SELinux policy test definition (from F
 1. `update.yml` runs every 6 hours. If upstream `main` moved, it updates the submodule, regenerates
    `dist-version.sh` with `util/getversion.sh -s` (falls back to `src/getversion.sh` for the old layout), commits
    `Update <timestamp>`, runs `tito tag --accept-auto-changelog` and `git push --follow-tags`.
-2. The COPR package (SCM source, `master`, tito build method, auto-rebuild via webhook) builds the pushed tag.
+2. The COPR package (SCM source, `master`, tito build method, auto-rebuild) builds the pushed tag. It is
+   triggered by a GitHub webhook subscribed to `create` events only, i.e. by the creation of the tito tag.
    COPR makes a single SRPM and rebuilds it in every chroot (Fedora 43+/rawhide, RHEL/EPEL/CentOS Stream
    8-10, AlmaLinux 9-10/Kitten, Amazon Linux 2023; x86_64 and aarch64).
 3. Versioning comes from `SmartmontoolsVersionTagger`: `<last AC_INIT version in configure.ac>.<commits since
@@ -44,20 +45,29 @@ tests/tests-DSP.yaml          # Fedora CI SELinux policy test definition (from F
 - **Packaging-only change without a submodule bump:** bump the release only, so the version stays and the
   tag stays unique: `tito tag --use-release=<N>` (the tagger recomputes the version from the submodule, which
   is unchanged), then `git push --follow-tags origin` as tito instructs.
+- **Never push more than three tags at once.** GitHub does not generate `create` events "when more than three
+  tags are created at once", so COPR is never notified and does not build. Before `git push --follow-tags`,
+  make sure no stray local tags are reachable from `master` (see the `--no-tags` fetch below). If a build was
+  not triggered, launch it manually in COPR.
+- A push without a new tag (e.g. a docs-only commit) does not trigger a COPR build.
 - The bot commits to `master` every 6 hours; fetch/pull before committing and pushing.
 - `drivedb.h`, `sources` and Fedora's version-specific backport patches are intentionally not carried: the trunk
   already contains them, and the drivedb refresh is not used.
 
 ## Synchronizing with Fedora
 
-The packaging follows the Fedora `f44` dist-git branch.
+The packaging follows the Fedora `f44` dist-git branch. Last synchronized Fedora commit: `d433214`.
 
 ```bash
 git clone https://src.fedoraproject.org/rpms/smartmontools.git .claude-tmp/fedora-smartmontools
-git fetch .claude-tmp/fedora-smartmontools 'refs/remotes/origin/*:refs/fedora/*'
+git fetch --no-tags .claude-tmp/fedora-smartmontools 'refs/remotes/origin/*:refs/fedora/*'
 git log --oneline <last synced Fedora commit>..refs/fedora/f44
 git merge --no-commit refs/fedora/f44
 ```
+
+- **Always fetch with `--no-tags`.** Fedora has dozens of CVS-era annotated tags (`F-*-split`, `FC-*-split`,
+  `smartmontools-5_*`) pointing into the shared history; a plain fetch imports them, and tito's
+  `git push --follow-tags` then pushes them all, which suppresses the COPR webhook (see Rules above).
 
 - Non-spec files (`smartmon.*`, `smartdnotify`, `smartmontools.sysconf`, `smartmontools.tmpfilesd`) merge normally.
 - `smartmontools.spec` -> `smartmontools-next.spec` is **not** rename-detected (the tito changelog makes the
