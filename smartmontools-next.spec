@@ -7,8 +7,8 @@
 
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		%{packagename}-next
-Version:	8.0.574
-Release:	2
+Version:	8.0.575
+Release:	1
 Epoch:		1
 License:	GPL-2.0-or-later
 URL:		https://github.com/karellen/smartmontools-next
@@ -195,6 +195,11 @@ fi
 %ghost %verify(not md5 size mode mtime) %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
 
 %changelog
+* Mon Oct 19 2026 Karellen Supervisor <supervisor@karellen.co> 8.0.575-1
+- Update 2026-10-19T12:14:41Z (supervisor@karellen.co)
+- Document tag pitfalls of the Fedora sync and COPR webhook
+  (arcadiy@ivanov.biz)
+
 * Thu Oct 15 2026 Arcadiy Ivanov <arcadiy@ivanov.biz> 8.0.574-2
 - Merge Fedora f44 packaging: SELinux smartdwarn_t domain, smartdnotify notifications, tmpfiles.d
 - Make the pidfs_t SELinux rule optional for EL8, EL9 and Amazon Linux 2023
