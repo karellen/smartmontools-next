@@ -7,7 +7,7 @@
 
 Summary:	Tools for monitoring SMART capable hard disks
 Name:		%{packagename}-next
-Version:	8.0.575
+Version:	8.0.576
 Release:	1
 Epoch:		1
 License:	GPL-2.0-or-later
@@ -195,6 +195,9 @@ fi
 %ghost %verify(not md5 size mode mtime) %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{modulename}
 
 %changelog
+* Tue Oct 20 2026 Karellen Supervisor <supervisor@karellen.co> 8.0.576-1
+- Update 2026-10-20T12:13:18Z (supervisor@karellen.co)
+
 * Mon Oct 19 2026 Karellen Supervisor <supervisor@karellen.co> 8.0.575-1
 - Update 2026-10-19T12:14:41Z (supervisor@karellen.co)
 - Document tag pitfalls of the Fedora sync and COPR webhook
